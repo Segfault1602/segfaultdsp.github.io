@@ -1,0 +1,17 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "SegfaultDSP"
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/segfault1602
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+
+
