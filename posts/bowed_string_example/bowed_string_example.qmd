@@ -1,0 +1,40 @@
+---
+title: "BowedString audio example"
+---
+
+Here's a few audio examples of the BowedString instrument. This is the output of the string without going through the body filter.
+
+
+1. Velocity and Force sweep from 0 to 1 then back to 0
+
+<html>
+<audio controls>
+  <source src="../assets/velocity_sweep.wav" type="audio/wav">
+</audio></html>
+
+---
+
+2. Fast bowing by modulating velocity with a clipped sine wave. A staccato sound can be achieved by reducing the amount of clipping.
+
+<html>
+<audio controls>
+  <source src="../assets/fast_note.wav" type="audio/wav">
+</audio></html>
+
+---
+
+3. Vibrato
+
+<html>
+<audio controls>
+  <source src="../assets/vibrato.wav" type="audio/wav">
+</audio></html>
+
+---
+
+4. Pitch slide, 440Hz to 660Hz
+
+<html>
+<audio controls>
+  <source src="../assets/pitchslide.wav" type="audio/wav">
+</audio></html>
