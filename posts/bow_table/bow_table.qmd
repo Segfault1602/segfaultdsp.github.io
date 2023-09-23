@@ -1,17 +1,24 @@
 ---
-title: "Bow Table"
-author: Alexandre St-Onge
+title: "BowedString Part 2: Bow Table"
 date: '2023-09-16'
 jupyter: python3
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
+
+Now that we have our working waveguide, we need something to excite it. This is done with the help of
+a [bow table](https://ccrma.stanford.edu/~jos/BowedStrings/Simplified_Piecewise_Linear_Bow.html). While the linear bow table would be simple to implement, we would need to know the capture or break-away differential velocity value $v_\Delta^c$ and also how this value responds to varying force values. I could not find a simple way to find these values but luckily, the [STK](https://github.com/thestk/stk) library has a bow table that we can reuse.
 
 Let's take a look at the bow table as defined in the [stk](https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/include/BowTable.h#L84):
 
-$$ BowTable(v_\Delta^+) = \min \left \{(|v_\Delta^+|*f_{bow} + 0.75)^{-4}, 1 \right \} $$
+$$ BowTable(v_\Delta^+) = \min \left \{(|v_\Delta^+|*Slope + 0.75)^{-4}, 1 \right \} $$
 
-Where $v_\Delta^+$ is the velocity of the bow minus the velocity of the string going into the bow and $f_{bow}$ is the bow force. While the equation may seem daunting at first, we can easily plot it and immediatly recognize a shape similar to the linear bow table as presented by figure [9.54](https://ccrma.stanford.edu/~jos/pasp/Bow_String_Scattering_Junction.html) in Physical Audio Signal Processing by Julius O. Smith.
+Where $v_\Delta^+$ is the velocity of the bow minus the velocity of the string going into the bow and $Slope$ is the parameter that controls the shape of the table and is related to the bow force. While the equation may seem daunting at first, we can easily plot it and immediately recognize a shape similar to the linear bow table as presented by figure [9.54](https://ccrma.stanford.edu/~jos/pasp/Bow_String_Scattering_Junction.html) in Physical Audio Signal Processing by Julius O. Smith.
 
 ```{python}
+# | fig-alt: "A graph showing the bow table as defined in the stk"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
@@ -23,11 +30,13 @@ output = np.minimum(pow(abs(v_delta) * bow_force + 0.75, -4), 1)
 
 plt.figure(1)
 plt.plot(v_delta, output)
+plt.xlabel('$v_\Delta^+$')
+plt.ylabel('Reflection Coefficient')
 plt.grid()
 
 ```
 
-We can now observe how varying the force transform bow table.
+We can now observe how varying the force transforms the bow table.
 
 ```{python}
 
@@ -38,12 +47,21 @@ for f in [1, 2.5, 5]:
     output = np.minimum(pow(abs(v_delta) * f + 0.75, -4), 1)
     plt.plot(v_delta, output, label=f'force={f}')
 plt.legend()
+plt.xlabel('$v_\\Delta^+$')
+plt.ylabel('Reflection Coefficient')
 plt.grid()
 ```
 
-See how as the "force" goes up, the region of the table where the reflection coefficient is 1 gets smaller. This is simply a quirk of the equation we are using as in reality, the more force is applied, the easier it will be for the string and bow to stick toghether. It is common to control parameter like these by assigning a value going from 0 to 1, which make this a little bit counterintuitive, but this is something that we will address later.
+As $Slope$ goes up, the region of the table where the reflection coefficient is 1 gets smaller. This plateau represents the moment where the bow and the string are "sticking" together.
 
-For now, let's try to find a usable range of value for $f_{bow}$. To do so we can plot the same graph as before and adding $f_{bow}$ as a variable.
+We now need to find what is the usable range for $Slope$. Looking at the STK again, we can see where the slope is set:
+
+[bowed.cpp](https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/src/Bowed.cpp#L155)
+```{c++}
+    bowTable_.setSlope( 5.0 - (4.0 * normalizedValue) );
+```
+
+Where `normalizedValue` is a value between 0 and 1 representing the bow pressure. This effectively restricts the slope value between 1 and 5. In other words, as the bow pressure increases, the 'sticking' zone of the bow table gets larger. We can plot the bow table equation again, but this time with varying force values between 0 and 10 to understand why.
 
 ```{python}
 
@@ -61,21 +79,13 @@ surf = ax.pcolormesh(
     linewidth=0,
     cmap='viridis',)
 
-fig.colorbar(surf, shrink=0.5, aspect=5)
+fig.colorbar(surf, shrink=0.5, aspect=5, label='Reflection Coefficient')
 
 ax.yaxis.set_major_formatter('{x:.02f}')
 ax.xaxis.set_major_locator(MultipleLocator(1))
-ax.set_xlabel('Bow Force')
-ax.set_ylabel('v_delta')
+ax.set_xlabel('$Slope$')
+ax.set_ylabel('$v_\\Delta^+$')
 ax.dist = 10
 ```
 
-Looking at the graph, we can immediatly see that once the bow force gets higher than 5, the reflection coefficient returned by the table stays consistent and there's limited value for a bow table to support force value higher than 5. On the other hand, with a bow force value near 0, the table will always return a reflection coefficient of 1. From this, we can conclude that we will probably want to limit our bow force value between 1 and 5. And if we look at [bowed.cpp](https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/src/Bowed.cpp#L155) we can see this equation:
-
-```{c++}
-    bowTable_.setSlope( 5.0 - (4.0 * normalizedValue) );
-```
-
-Where `normalizedValue` is a value between 0 and 1. This equation solves our two problems:
-1. It limits the bow force value between 1 and 5
-2. An increasing `normalizedValue` now correspond to a higher bow force.
+Looking at the graph, we can immediately see that once the slope gets higher than 5, the reflection coefficient returned by the table stays consistent and there's limited value for a bow table to support a slope value higher than 5. On the other hand, with a slope value $<1$, the table becomes almost flat.

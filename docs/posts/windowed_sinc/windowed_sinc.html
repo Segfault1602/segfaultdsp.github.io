@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Alexandre St-Onge">
 <meta name="dcterms.date" content="2023-09-16">
 
 <title>SegfaultDSP - Windowed sinc resampling</title>
@@ -140,12 +139,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Alexandre St-Onge </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -177,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> ceil</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s define a function that will build our sinc table for us. The sinc table will only contain the “right wing” of the symmetric FIR filter. This function will also return a table of differences between successive FIR sample which will be useful to speed up our linear interpolation latter on.</p>
+<p>Let’s define a function that will build our sinc table for us. The sinc table will only contain the “right-wing” of the symmetric FIR filter. This function will also return a table of differences between successive FIR samples which will be useful to speed up our linear interpolation later on.</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_sinc_table(num_zeros, samples_per_crossing):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -289,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="windowed_sinc_files/figure-html/cell-6-output-1.png" width="609" height="411"></p>
 </div>
 </div>
-<p>We are now ready to perform our own benchmark test. Inspired by the <a href="https://src.infinitewave.ca/">Infinite Wave</a> methodology, we will try to downsample a quadratic chirp signal from 96kHz to 44.1kHz.</p>
+<p>We are now ready to perform our benchmark test. Inspired by the <a href="https://src.infinitewave.ca/">Infinite Wave</a> methodology, we will try to downsample a quadratic chirp signal from 96kHz to 44.1kHz.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ORIGINAL_FS <span class="op">=</span> <span class="dv">96000</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>CHIRP_LENGTH_SECONDS <span class="op">=</span> <span class="dv">8</span></span>
@@ -298,7 +291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> np.linspace(<span class="dv">0</span>, CHIRP_LENGTH_SECONDS, ORIGINAL_FS<span class="op">*</span>CHIRP_LENGTH_SECONDS)</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>in_chirp <span class="op">=</span> signal.chirp(time, <span class="dv">0</span>, CHIRP_LENGTH_SECONDS, END_CHIRP_FREQUENCY, <span class="st">'quadratic'</span>) <span class="op">*</span> <span class="fl">0.6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We will now resample that signal 3 different ways. First, we’ll use our <code>sinc_resample</code> method with a sinc table containing 13 zero crossing and then again with a table containing 32 zero crossing. This should allow us to see how the number of zero crossing in our table affects the lowpass filtering of our implementation. Lastly, we will use numpy to resample the signal using linear interpolation so that we can compare our algorithm against a fast a common resampling method.</p>
+<p>We will now resample that signal in 3 different ways. First, we’ll use our <code>sinc_resample</code> method with a sinc table containing 13 zero crossings and then again with a table containing 32 zero crossings. This should allow us to see how the number of zero crossing in our table affects the lowpass filtering of our implementation. Lastly, we will use numpy to resample the signal using linear interpolation so that we can compare our algorithm against a fast common resampling method.</p>
 <div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TARGET_FS <span class="op">=</span> <span class="dv">44100</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>RESAMPLING_RATIO <span class="op">=</span> TARGET_FS <span class="op">/</span> ORIGINAL_FS</span>
@@ -357,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="windowed_sinc_files/figure-html/cell-8-output-2.png" width="698" height="473"></p>
 </div>
 </div>
-<p>First, we can immediatly notice the the resampled output lost all content above the Nyquist frequency. This explain why half the spectrogram is empty. The downward line(s) around the 6 second mark is actually the higher frequency content present in the original file that are now folding around Nyqist. This is called aliasing. We can also see how the resampling done with 32 zeros show slightly less aliasing then the 13 zeros resampling.</p>
+<p>First, we can immediately notice that the resampled output lost all content above the Nyquist frequency. This explains why half the spectrogram is empty. The downward line(s) around the 6-second mark is the higher frequency content present in the original file that is now folding around Nyquist. This is called aliasing. We can also see how the resampling done with 32 zeros shows slightly less aliasing than the 13 zeros resampling.</p>
 <p>Let’s look at the impulse response of our resampler.</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ORIGINAL_FS <span class="op">=</span> <span class="dv">96000</span></span>

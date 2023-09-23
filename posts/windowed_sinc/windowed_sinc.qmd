@@ -1,12 +1,11 @@
 ---
 title: Windowed sinc resampling
-author: Alexandre St-Onge
 date: '2023-09-16'
 jupyter: python3
 ---
 
 
-First, let's get out python imports out of the way.
+First, let's get our python imports out of the way.
 
 ```{python}
 import numpy as np
@@ -17,7 +16,7 @@ from scipy import signal
 from math import ceil
 ```
 
-Let's define a function that will build our sinc table for us. The sinc table will only contain the "right wing" of the symmetric FIR filter. This function will also return a table of differences between successive FIR sample which will be useful to speed up our linear interpolation latter on.
+Let's define a function that will build our sinc table for us. The sinc table will only contain the "right-wing" of the symmetric FIR filter. This function will also return a table of differences between successive FIR samples which will be useful to speed up our linear interpolation later on.
 
 ```{python}
 def build_sinc_table(num_zeros, samples_per_crossing):
@@ -131,7 +130,7 @@ plt.legend(loc="upper right")
 plt.show()
 ```
 
-We are now ready to perform our own benchmark test. Inspired by the [Infinite Wave](https://src.infinitewave.ca/) methodology, we will try to downsample a quadratic chirp signal from 96kHz to 44.1kHz.
+We are now ready to perform our benchmark test. Inspired by the [Infinite Wave](https://src.infinitewave.ca/) methodology, we will try to downsample a quadratic chirp signal from 96kHz to 44.1kHz.
 
 ```{python}
 
@@ -143,7 +142,7 @@ time = np.linspace(0, CHIRP_LENGTH_SECONDS, ORIGINAL_FS*CHIRP_LENGTH_SECONDS)
 in_chirp = signal.chirp(time, 0, CHIRP_LENGTH_SECONDS, END_CHIRP_FREQUENCY, 'quadratic') * 0.6
 ```
 
-We will now resample that signal 3 different ways. First, we'll use our `sinc_resample` method with a sinc table containing 13 zero crossing and then again with a table containing 32 zero crossing. This should allow us to see how the number of zero crossing in our table affects the lowpass filtering of our implementation. Lastly, we will use numpy to resample the signal using linear interpolation so that we can compare our algorithm against a fast a common resampling method.
+We will now resample that signal in 3 different ways. First, we'll use our `sinc_resample` method with a sinc table containing 13 zero crossings and then again with a table containing 32 zero crossings. This should allow us to see how the number of zero crossing in our table affects the lowpass filtering of our implementation. Lastly, we will use numpy to resample the signal using linear interpolation so that we can compare our algorithm against a fast common resampling method.
 
 ```{python}
 TARGET_FS = 44100
@@ -197,7 +196,7 @@ fig.tight_layout(pad=1.0)
 plt.show()
 ```
 
-First, we can immediatly notice the the resampled output lost all content above the Nyquist frequency. This explain why half the spectrogram is empty. The downward line(s) around the 6 second mark is actually the higher frequency content present in the original file that are now folding around Nyqist. This is called aliasing. We can also see how the resampling done with 32 zeros show slightly less aliasing then the 13 zeros resampling.
+First, we can immediately notice that the resampled output lost all content above the Nyquist frequency. This explains why half the spectrogram is empty. The downward line(s) around the 6-second mark is the higher frequency content present in the original file that is now folding around Nyquist. This is called aliasing. We can also see how the resampling done with 32 zeros shows slightly less aliasing than the 13 zeros resampling.
 
 Let's look at the impulse response of our resampler.
 

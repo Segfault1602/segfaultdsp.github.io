@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Alexandre St-Onge">
 <meta name="dcterms.date" content="2023-09-16">
 
-<title>SegfaultDSP - Bow Table</title>
+<title>SegfaultDSP - BowedString Part 2: Bow Table</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,19 +134,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Bow Table</h1>
+      <h1 class="title">BowedString Part 2: Bow Table</h1>
                       </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Alexandre St-Onge </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -170,10 +163,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<p>Now that we have our working waveguide, we need something to excite it. This is done with the help of a <a href="https://ccrma.stanford.edu/~jos/BowedStrings/Simplified_Piecewise_Linear_Bow.html">bow table</a>. While the linear bow table would be simple to implement, we would need to know the capture or break-away differential velocity value <span class="math inline">\(v_\Delta^c\)</span> and also how this value responds to varying force values. I could not find a simple way to find these values but luckily, the <a href="https://github.com/thestk/stk">STK</a> library has a bow table that we can reuse.</p>
 <p>Let’s take a look at the bow table as defined in the <a href="https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/include/BowTable.h#L84">stk</a>:</p>
-<p><span class="math display">\[ BowTable(v_\Delta^+) = \min \left \{(|v_\Delta^+|*f_{bow} + 0.75)^{-4}, 1 \right \} \]</span></p>
-<p>Where <span class="math inline">\(v_\Delta^+\)</span> is the velocity of the bow minus the velocity of the string going into the bow and <span class="math inline">\(f_{bow}\)</span> is the bow force. While the equation may seem daunting at first, we can easily plot it and immediatly recognize a shape similar to the linear bow table as presented by figure <a href="https://ccrma.stanford.edu/~jos/pasp/Bow_String_Scattering_Junction.html">9.54</a> in Physical Audio Signal Processing by Julius O. Smith.</p>
+<p><span class="math display">\[ BowTable(v_\Delta^+) = \min \left \{(|v_\Delta^+|*Slope + 0.75)^{-4}, 1 \right \} \]</span></p>
+<p>Where <span class="math inline">\(v_\Delta^+\)</span> is the velocity of the bow minus the velocity of the string going into the bow and <span class="math inline">\(Slope\)</span> is the parameter that controls the shape of the table and is related to the bow force. While the equation may seem daunting at first, we can easily plot it and immediately recognize a shape similar to the linear bow table as presented by figure <a href="https://ccrma.stanford.edu/~jos/pasp/Bow_String_Scattering_Junction.html">9.54</a> in Physical Audio Signal Processing by Julius O. Smith.</p>
 <div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.ticker <span class="im">import</span> MultipleLocator</span>
@@ -185,13 +181,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>plt.figure(<span class="dv">1</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.plot(v_delta, output)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'$v_\Delta^+$'</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Reflection Coefficient'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
-<p><img src="bow_table_files/figure-html/cell-2-output-1.png" width="571" height="411"></p>
+<p><img src="bow_table_files/figure-html/cell-2-output-1.png" alt="A graph showing the bow table as defined in the stk" width="589" height="434"></p>
 </div>
 </div>
-<p>We can now observe how varying the force transform bow table.</p>
+<p>We can now observe how varying the force transforms the bow table.</p>
 <div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>v_delta <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.figure(<span class="dv">2</span>)</span>
@@ -199,42 +200,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> np.minimum(<span class="bu">pow</span>(<span class="bu">abs</span>(v_delta) <span class="op">*</span> f <span class="op">+</span> <span class="fl">0.75</span>, <span class="op">-</span><span class="dv">4</span>), <span class="dv">1</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    plt.plot(v_delta, output, label<span class="op">=</span><span class="ss">f'force=</span><span class="sc">{</span>f<span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'$v_</span><span class="ch">\\</span><span class="st">Delta^+$'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Reflection Coefficient'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.grid()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
-<p><img src="bow_table_files/figure-html/cell-3-output-1.png" width="571" height="411"></p>
+<p><img src="bow_table_files/figure-html/cell-3-output-1.png" width="589" height="434"></p>
 </div>
 </div>
-<p>See how as the “force” goes up, the region of the table where the reflection coefficient is 1 gets smaller. This is simply a quirk of the equation we are using as in reality, the more force is applied, the easier it will be for the string and bow to stick toghether. It is common to control parameter like these by assigning a value going from 0 to 1, which make this a little bit counterintuitive, but this is something that we will address later.</p>
-<p>For now, let’s try to find a usable range of value for <span class="math inline">\(f_{bow}\)</span>. To do so we can plot the same graph as before and adding <span class="math inline">\(f_{bow}\)</span> as a variable.</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>v_delta <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>f_bow <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">50</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>v_delta, f_bow <span class="op">=</span> np.meshgrid(v_delta, f_bow)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> np.minimum(<span class="bu">pow</span>(<span class="bu">abs</span>(v_delta) <span class="op">*</span> f_bow <span class="op">+</span> <span class="fl">0.75</span>, <span class="op">-</span><span class="dv">4</span>), <span class="dv">1</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>surf <span class="op">=</span> ax.pcolormesh(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    f_bow,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    v_delta,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    output,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">'viridis'</span>,)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>fig.colorbar(surf, shrink<span class="op">=</span><span class="fl">0.5</span>, aspect<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_major_formatter(<span class="st">'</span><span class="sc">{x:.02f}</span><span class="st">'</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MultipleLocator(<span class="dv">1</span>))</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Bow Force'</span>)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'v_delta'</span>)</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>ax.dist <span class="op">=</span> <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="bow_table_files/figure-html/cell-4-output-1.png" width="591" height="431"></p>
-</div>
-</div>
-<p>Looking at the graph, we can immediatly see that once the bow force gets higher than 5, the reflection coefficient returned by the table stays consistent and there’s limited value for a bow table to support force value higher than 5. On the other hand, with a bow force value near 0, the table will always return a reflection coefficient of 1. From this, we can conclude that we will probably want to limit our bow force value between 1 and 5. And if we look at <a href="https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/src/Bowed.cpp#L155">bowed.cpp</a> we can see this equation:</p>
+<p>As <span class="math inline">\(Slope\)</span> goes up, the region of the table where the reflection coefficient is 1 gets smaller. This plateau represents the moment where the bow and the string are “sticking” together.</p>
+<p>We now need to find what is the usable range for <span class="math inline">\(Slope\)</span>. Looking at the STK again, we can see where the slope is set:</p>
+<p><a href="https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/src/Bowed.cpp#L155">bowed.cpp</a></p>
 <pre class="{c++}"><code>    bowTable_.setSlope( 5.0 - (4.0 * normalizedValue) );</code></pre>
-<p>Where <code>normalizedValue</code> is a value between 0 and 1. This equation solves our two problems: 1. It limits the bow force value between 1 and 5 2. An increasing <code>normalizedValue</code> now correspond to a higher bow force.</p>
+<p>Where <code>normalizedValue</code> is a value between 0 and 1 representing the bow pressure. This effectively restricts the slope value between 1 and 5. In other words, as the bow pressure increases, the ‘sticking’ zone of the bow table gets larger. We can plot the bow table equation again, but this time with varying force values between 0 and 10 to understand why.</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>v_delta <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>f_bow <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">50</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>v_delta, f_bow <span class="op">=</span> np.meshgrid(v_delta, f_bow)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> np.minimum(<span class="bu">pow</span>(<span class="bu">abs</span>(v_delta) <span class="op">*</span> f_bow <span class="op">+</span> <span class="fl">0.75</span>, <span class="op">-</span><span class="dv">4</span>), <span class="dv">1</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>surf <span class="op">=</span> ax.pcolormesh(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    f_bow,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    v_delta,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    output,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">'viridis'</span>,)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>fig.colorbar(surf, shrink<span class="op">=</span><span class="fl">0.5</span>, aspect<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span><span class="st">'Reflection Coefficient'</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_major_formatter(<span class="st">'</span><span class="sc">{x:.02f}</span><span class="st">'</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_major_locator(MultipleLocator(<span class="dv">1</span>))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'$Slope$'</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'$v_</span><span class="ch">\\</span><span class="st">Delta^+$'</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>ax.dist <span class="op">=</span> <span class="dv">10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="bow_table_files/figure-html/cell-4-output-1.png" width="614" height="433"></p>
+</div>
+</div>
+<p>Looking at the graph, we can immediately see that once the slope gets higher than 5, the reflection coefficient returned by the table stays consistent and there’s limited value for a bow table to support a slope value higher than 5. On the other hand, with a slope value <span class="math inline">\(&lt;1\)</span>, the table becomes almost flat.</p>
 
 
 
