@@ -4,6 +4,9 @@ project:
   resources:
     "posts/assets/**"
 
+execute:
+  freeze: false
+
 website:
   title: "SegfaultDSP"
   navbar:
