@@ -1,4 +1,5 @@
 /.quarto/
+/_freeze/
 
 .DS_STORE
 */.DS_STORE
