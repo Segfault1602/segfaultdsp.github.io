@@ -4,10 +4,14 @@ date: '2023-09-16'
 jupyter: python3
 ---
 
+While there is a lot of theoritical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the implementation are usually heavily optimized and designed to support real-time scenario. This article will try to provide a simple implementation of the algorithm based on the CCRMA description [article](https://ccrma.stanford.edu/~jos/resample/Implementation.html). You can find a plain Python script containing the code used in this article [here](https://github.com/Segfault1602/libdsp/blob/main/scripts/sinc_interpolate_ccrma.py).
+
 
 First, let's get our python imports out of the way.
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import sinc
@@ -42,6 +46,8 @@ def build_sinc_table(num_zeros, samples_per_crossing):
 And here's what our table looks like:
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
 h, h_diff = build_sinc_table(num_zeros=13, samples_per_crossing=512)
 plt.figure(1)
 plt.plot(h)
@@ -116,7 +122,7 @@ ORIGINAL_FS = 100
 SIGNAL_FREQUENCY = 20
 TARGET_FS = 1000
 
-time = np.linspace(0, 1, ORIGINAL_FS)
+time = np.linspace(0, 1, ORIGINAL_FS, endpoint=False)
 in_sine = np.sin(2 * np.pi * time * SIGNAL_FREQUENCY)
 
 output = sinc_resample(in_sine, TARGET_FS / ORIGINAL_FS, h, h_diff, SAMPLES_PER_CROSSING)
@@ -198,9 +204,11 @@ plt.show()
 
 First, we can immediately notice that the resampled output lost all content above the Nyquist frequency. This explains why half the spectrogram is empty. The downward line(s) around the 6-second mark is the higher frequency content present in the original file that is now folding around Nyquist. This is called aliasing. We can also see how the resampling done with 32 zeros shows slightly less aliasing than the 13 zeros resampling.
 
-Let's look at the impulse response of our resampler.
+Finally, we can look at the impulse and frequency response of our resampler:
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
 ORIGINAL_FS = 96000
 TARGET_FS = 44100
 RESAMPLING_RATIO = TARGET_FS / ORIGINAL_FS
@@ -241,6 +249,8 @@ plt.plot(out_imp_2)
 ```
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Show the code"
 from scipy import fft
 
 NFFT = 1024
