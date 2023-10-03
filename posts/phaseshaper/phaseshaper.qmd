@@ -1,0 +1,20 @@
+---
+title: "Phaseshaping Oscillator"
+fig-cap-location: top
+---
+
+::: {layout-ncol=2}
+![Hardsync](../assets/phaseshaper/hardsync.gif)
+
+![Supersaw](../assets/phaseshaper/supersaw.gif)
+
+![Softsync](../assets/phaseshaper/softsync.gif)
+
+![Waveslice](../assets/phaseshaper/waveslice.gif)
+
+![Variable-slope: Ramp Phase](../assets/phaseshaper/var_slope.gif)
+
+![Variable-slope: Triangular Phase](../assets/phaseshaper/var_tri.gif)
+
+![Triangle Modulation](../assets/phaseshaper/trimod.gif)
+:::

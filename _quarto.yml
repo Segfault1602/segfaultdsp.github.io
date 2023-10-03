@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: docs
   resources:
-    "posts/assets/*"
+    "posts/assets/**"
 
 website:
   title: "SegfaultDSP"

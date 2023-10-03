@@ -1,0 +1,11 @@
+{
+  "hash": "5b120237efe06f4ab089e4ef73ab5b55",
+  "result": {
+    "markdown": "---\ntitle: Phaseshaping Oscillator\n---\n\n::: {layout-ncol=2}\n![Hardsync](../assets/phaseshaper/hardsync.gif)\n![Supersaw](../assets/phaseshaper/supersaw.gif)\n\n![Softsync](../assets/phaseshaper/softsync.gif)\n![Waveslice](../assets/phaseshaper/waveslice.gif)\n:::\n\n",
+    "supporting": [
+      "phaseshaper_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
