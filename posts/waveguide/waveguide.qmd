@@ -1,0 +1,38 @@
+---
+title: "BowedString Part 1: Digital Waveguide"
+jupyter: python3
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+---
+
+In this series, I will walk through the process of building a bowed string model using digital waveguide. If you are not familiar with the technique, Julius O. Smith wrote a great book on the subject: [Physical Audio Signal Processing](https://ccrma.stanford.edu/~jos/pasp/Digital_Waveguides.html). The particual model I will build can also be found in this book [here](https://ccrma.stanford.edu/~jos/pasp/Digital_Waveguide_Bowed_String.html).
+
+[![Bowed string model by Julius O. Smith](../assets/waveguide/ccrma_model.png)](https://ccrma.stanford.edu/~jos/pasp/Digital_Waveguide_Bowed_String.html)
+
+One possible way to implement this model would be to implement exactly as presented using 4 distinct delay lines. This would work quite well for a static model, but since we want to be able to change the delay lines' lengths in realtime, we will quickly run into some issues.
+
+To understand, let's look at a basic delay line implementation. The canonical delay line usually consist of a circular buffer and two pointers: one for reading and one for writing. Changing the delay length is as simple as changing the read pointer's position. This looks something like this:
+
+TODO: insert image
+
+Changing the delay length is then as simple as modifying the read pointer position. A simple waveguide can be implemented using two delay lines, one for the right traveling wave and one for the left traveling wave. Wich would look something like this:
+
+TODO: insert image
+
+Notice how the delay lines are going in opposite directions. Now, if we were to change the waveguide length by reduing both delay line length this would look like this:
+
+TODO: insert image
+
+If the waveguide was modeling a string, we've now effectively removed a bit of the right traveling signal from the right end of the string and a bit of the left traveling signal from the left end of the string. This is physically impossible and can introduce discontinuities in the signal. Instead, what we want to achieve is something like this:
+
+TODO: insert image
+
+One way to do this, is with the algorithm presented by M. Karjalainen and U. K. Laine in their 1991 paper [A model for real-time sound synthesis of guitar on a floating-point signal processor](https://ieeexplore.ieee.org/document/151066/authors#authors). A c++ implementation can be found in [libdsp](https://github.com/Segfault1602/libdsp/blob/main/src/junction.cpp#L40). TODO: briefly explain the algo.
+
+While this will allow us to smoothly vary the length of the waveguide, physically, this is more akin to changing the length of the string. For this project, I am interested in modeling the effect of a finger pressing on the string. In this model, the length of the string would stay constant and a moveable finger would introduce a reflection point along the string.
+
+To do this, we will implement a system similar to a scattering junction where energy is either reflected or transmitted at the junction of the string and the finger. A possible implementation for this is presented in Vesa Välimäki's paper [Discrete-Time Modeling of Acoustic Tubes Using Fractional Delay Filters](http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch4_pt2_allpass.pdf). Instead of using an allpass filter to interpolate the signal I have opted to use a simple linear interpolator. Since we want to be able to vary the position of the junction in real time, we would need to perform extra work to avoid the transient that would be introduced by using an allpass interpolation. A method to eliminate theses transients is presented in [this paper](https://quod.lib.umich.edu/i/icmc/bbp2372.1995.096/--elimination-of-transients-in-time-varying-allpass-fractional?rgn=main;view=fulltext) by Vesa Välimäki, Timo I. Laakso and Jonathan MacKenzie. A c++ implementation can be found in [libdsp](https://github.com/Segfault1602/libdsp/blob/69865c5bde2230780497931b9ff81de999e5ff11/src/waveguide_gate.cpp#L74).
+
+[![Block diagram of the scattering junction by Vesa Välimäki](../assets/waveguide/fig4_33_vesa.png)](http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch4_pt2_allpass.pdf)
