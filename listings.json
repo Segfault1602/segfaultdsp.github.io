@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/waveguide/waveguide.html",
       "/posts/phaseshaper/phaseshaper.html",
       "/posts/windowed_sinc/windowed_sinc.html",
       "/posts/bow_table/bow_table.html",
