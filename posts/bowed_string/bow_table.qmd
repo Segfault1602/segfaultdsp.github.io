@@ -1,6 +1,6 @@
 ---
 title: "BowedString Part 2: Bow Table"
-date: '2023-09-16'
+order: 2
 jupyter: python3
 format:
   html:

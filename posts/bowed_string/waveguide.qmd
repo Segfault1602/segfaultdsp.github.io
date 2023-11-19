@@ -1,5 +1,6 @@
 ---
 title: "BowedString Part 1: Digital Waveguide"
+order: 1
 jupyter: python3
 format:
   html:
@@ -15,7 +16,7 @@ One possible way to implement this model would be to implement it exactly as pre
 
 To understand, let's look at a basic delay line implementation. The canonical delay line usually consists of a circular buffer and two pointers: one for reading and one for writing. Changing the delay length is as simple as changing the read pointer's position. This looks something like this:
 
-TODO: insert image
+![A delay line. The read pointer moves to the left as the delay length is decreased and to the right as the delay length is increased.](../assets/waveguide/delayline.png)
 
 A simple waveguide can be implemented using two delay lines, one for the right traveling wave and one for the left traveling wave.
 
@@ -23,11 +24,11 @@ A simple waveguide can be implemented using two delay lines, one for the right t
 
 Notice how the delay lines are going in opposite directions. Now, if we were to change the waveguide length by reducing both delay line lengths this would look like this:
 
-![Reducing the waveguide length](../assets/waveguide/waveguide2.png)
+![Reducing the waveguide length. The red parts indicate the samples that get discarded as the delay is decreased.](../assets/waveguide/waveguide2.png)
 
 If the waveguide was modeling a string, we've now effectively removed a bit of the right traveling signal from the right end of the string and a bit of the left traveling signal from the left end of the string. This is physically impossible and can introduce discontinuities in the signal. Instead, what we want to achieve is something like this:
 
-![A more realistic waveguide](../assets/waveguide/waveguide_gates.png)
+![A more realistic waveguide.](../assets/waveguide/waveguide_gates.png)
 
 Notice how the size of the waveguide does not change and instead, a reflection point is introduced at some point on the string, effectively splitting the waveguide in two. This is attempting to simulate a finger pressing on the string.
 

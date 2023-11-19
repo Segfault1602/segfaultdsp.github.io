@@ -1,6 +1,5 @@
 ---
 title: Windowed sinc resampling
-date: '2023-09-16'
 jupyter: python3
 ---
 

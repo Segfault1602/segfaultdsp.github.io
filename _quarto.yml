@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  preview:
+    port: 4200
+    browser: true
   resources:
     "posts/assets/**"
 
@@ -13,6 +16,11 @@ website:
     right:
       - icon: github
         href: https://github.com/segfault1602
+  sidebar:
+    style: "docked"
+    search: true
+    contents: auto
+
 format:
   html:
     theme: flatly
