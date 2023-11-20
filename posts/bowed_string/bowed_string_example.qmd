@@ -2,6 +2,7 @@
 title: "BowedString Part 3: BowedString audio example"
 order: 3
 jupyter: python3
+image: ../assets/waveguide/waveform.png
 ---
 
 Here are a few audio examples of the BowedString instrument in its current state. As a reminder, what we have right now is a digital waveguide with a nut and bridge. The bridge has a slight low-pass filter. The string is excited by the bow model we discussed in [part 2](./bow_table.qmd).
