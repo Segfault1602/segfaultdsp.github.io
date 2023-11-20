@@ -2,26 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://segfaultdsp.com/index.html</loc>
-    <lastmod>2023-11-18T21:31:29.038Z</lastmod>
+    <lastmod>2023-11-20T01:48:17.741Z</lastmod>
   </url>
   <url>
-    <loc>https://segfaultdsp.com/posts/bowed_string_example/bowed_string_example.html</loc>
-    <lastmod>2023-11-18T21:31:27.990Z</lastmod>
+    <loc>https://segfaultdsp.com/posts/bowed_string/bow_table.html</loc>
+    <lastmod>2023-11-20T01:48:16.700Z</lastmod>
   </url>
   <url>
-    <loc>https://segfaultdsp.com/posts/waveguide/waveguide.html</loc>
-    <lastmod>2023-11-18T21:31:26.337Z</lastmod>
+    <loc>https://segfaultdsp.com/posts/bowed_string/waveguide.html</loc>
+    <lastmod>2023-11-20T01:48:14.952Z</lastmod>
   </url>
   <url>
     <loc>https://segfaultdsp.com/posts/windowed_sinc/windowed_sinc.html</loc>
-    <lastmod>2023-11-18T21:31:25.584Z</lastmod>
+    <lastmod>2023-11-20T01:48:14.159Z</lastmod>
   </url>
   <url>
-    <loc>https://segfaultdsp.com/posts/bow_table/bow_table.html</loc>
-    <lastmod>2023-11-18T21:31:27.368Z</lastmod>
+    <loc>https://segfaultdsp.com/posts/bowed_string/bowed_string_example.html</loc>
+    <lastmod>2023-11-20T01:48:15.618Z</lastmod>
   </url>
   <url>
     <loc>https://segfaultdsp.com/posts/phaseshaper/phaseshaper.html</loc>
-    <lastmod>2023-11-18T21:31:28.414Z</lastmod>
+    <lastmod>2023-11-20T01:48:17.132Z</lastmod>
   </url>
 </urlset>

@@ -71,9 +71,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -97,7 +97,8 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-sidebar docked nav-fixed">
+
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -125,35 +126,130 @@ ul.task-list li input[type="checkbox"] {
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Segfault DSP</li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Segfault DSP</h1>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Posts</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+ <span class="menu-text">Bowed String</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posts/bowed_string/waveguide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BowedString Part 1: Digital Waveguide</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posts/bowed_string/bow_table.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BowedString Part 2: Bow Table</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posts/bowed_string/bowed_string_example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BowedString Part 3: BowedString audio example</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+ <span class="menu-text">Phaseshaper</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posts/phaseshaper/phaseshaper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Phaseshaping Oscillator</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+ <span class="menu-text">Windowed Sinc</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./posts/windowed_sinc/windowed_sinc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Windowed sinc resampling</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Segfault DSP</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
 
 <p>Welcome to my personal page!</p>
 <section id="softwares" class="level2">
@@ -171,125 +267,111 @@ ul.task-list li input[type="checkbox"] {
 
 </section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1700342919957" data-listing-reading-time-sort="3">
-<div class="thumbnail">
-<p><a href="./posts/waveguide/waveguide.html"> <p class="card-img-top"><img src="posts/assets/waveguide/ccrma_model.png"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./posts/waveguide/waveguide.html">
-<h3 class="no-anchor listing-title">
+<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
+<div class="list grid quarto-listing-cols-3">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1700357026437" data-listing-reading-time-sort="4">
+<a href="./posts/bowed_string/waveguide.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top"><img src="posts/assets/waveguide/ccrma_model.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
 BowedString Part 1: Digital Waveguide
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
+</h5>
+<div class="card-text listing-description">
 In this series, I will…
 </div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/waveguide/waveguide.html"> </a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1696900779470" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./posts/phaseshaper/phaseshaper.html"> <p class="card-img-top"><img src="posts/assets/phaseshaper/hardsync.gif"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./posts/phaseshaper/phaseshaper.html">
-<h3 class="no-anchor listing-title">
-Phaseshaping Oscillator
-</h3>
-<div class="listing-subtitle">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
 
 </div>
-<div class="listing-description">
-Phaseshaper is a eurorack oscillator built on the Daisy Patch. The module implement 7 phaseshaping techniques as presented in Phaseshaping…
+</div>
+</div>
 </div>
 </a>
 </div>
-<div class="metadata">
-<a href="./posts/phaseshaper/phaseshaper.html"> </a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1694847600000" data-listing-file-modified-sort="1696900779470" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
-<div class="thumbnail">
-<p><a href="./posts/windowed_sinc/windowed_sinc.html"> <p class="card-img-top"><img src="posts/windowed_sinc/windowed_sinc_files/figure-html/cell-4-output-1.png"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./posts/windowed_sinc/windowed_sinc.html">
-<h3 class="no-anchor listing-title">
-Windowed sinc resampling
-</h3>
-<div class="listing-subtitle">
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1700361524462" data-listing-reading-time-sort="3">
+<a href="./posts/bowed_string/bow_table.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
 
-</div>
-<div class="listing-description">
-While there is a lot of theoritical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/windowed_sinc/windowed_sinc.html">
-<div class="listing-date">
-Sep 16, 2023
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1694847600000" data-listing-file-modified-sort="1695490017873" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
-<div class="thumbnail">
-<p><a href="./posts/bow_table/bow_table.html"> <p class="card-img-top"><img src="posts/bow_table/bow_table_files/figure-html/cell-2-output-1.png" alt="A graph showing the bow table as defined in the stk"  class="thumbnail-image card-img"/></p> </a></p>
-</div>
-<div class="body">
-<a href="./posts/bow_table/bow_table.html">
-<h3 class="no-anchor listing-title">
+<p class="card-img-top"><img src="posts/bowed_string/bow_table_files/figure-html/cell-2-output-1.png" alt="A graph showing the bow table as defined in the stk" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
 BowedString Part 2: Bow Table
-</h3>
-<div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
+</h5>
+<div class="card-text listing-description">
 
 Now that we have our working waveguide, we need something to excite it. This is done with the help of a bow table. While the linear bow table would be simple to implement, we would…<span class="math inline"></span>
 </div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/bow_table/bow_table.html">
-<div class="listing-date">
-Sep 16, 2023
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1694847600000" data-listing-file-modified-sort="1700020236948" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
-<div class="thumbnail">
-<p><a href="./posts/bowed_string_example/bowed_string_example.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
-</div>
-<div class="body">
-<a href="./posts/bowed_string_example/bowed_string_example.html">
-<h3 class="no-anchor listing-title">
-BowedString Part 3: BowedString audio example
-</h3>
-<div class="listing-subtitle">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
 
 </div>
-<div class="listing-description">
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1700363540371" data-listing-reading-time-sort="1">
+<a href="./posts/bowed_string/bowed_string_example.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img src="./posts/assets/waveguide/waveform.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+BowedString Part 3: BowedString audio example
+</h5>
+<div class="card-text listing-description">
 Here are a few audio examples of the BowedString instrument in its current state. As…
 </div>
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div>
 </a>
 </div>
-<div class="metadata">
-<a href="./posts/bowed_string_example/bowed_string_example.html">
-<div class="listing-date">
-Sep 16, 2023
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1696900779470" data-listing-reading-time-sort="1">
+<a href="./posts/phaseshaper/phaseshaper.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top"><img src="posts/assets/phaseshaper/hardsync.gif" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Phaseshaping Oscillator
+</h5>
+<div class="card-text listing-description">
+Phaseshaper is a eurorack oscillator built on the Daisy Patch. The module implement 7 phaseshaping techniques as presented in Phaseshaping…
+</div>
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
 </div>
 </a>
 </div>
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1700344064194" data-listing-reading-time-sort="7">
+<a href="./posts/windowed_sinc/windowed_sinc.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top"><img src="posts/windowed_sinc/windowed_sinc_files/figure-html/cell-4-output-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Windowed sinc resampling
+</h5>
+<div class="card-text listing-description">
+While there is a lot of theoritical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the…
+</div>
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div>
+</a>
 </div>
 </div>
 <div class="listing-no-matching d-none">
