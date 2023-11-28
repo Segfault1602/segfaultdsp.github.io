@@ -38,13 +38,13 @@ To do this, we will implement a system similar to a scattering junction where en
 
 Here it is in action when the gate coefficient is set to 1:
 
-![Waveguide gate with coefficient 1](../assets/waveguide/gate_k1.gif)
+![Waveguide gate with coefficient 1. The top graph shows the left and right traveling wave separetly and the bottom graph shows the sum of the two waves.](../assets/waveguide/gate_k1.gif)
 
 By setting the gate coefficient to < 1, we can simulate a light press on the string which can result in harmonics based on the position of the gate:
 
-![Waveguide gate with coefficient 0.5 at the midpoint of the string](../assets/waveguide/gate_k05.gif)
+![Waveguide gate with coefficient 0.5 at the midpoint of the string. The top graph shows the left and right traveling wave separetly and the bottom graph shows the sum of the two waves.](../assets/waveguide/gate_k05.gif)
 
-![Waveguide gate with coefficient 0.5 at the 1/4 of the string](../assets/waveguide/gate_k05_025.gif)
+![Waveguide gate with coefficient 0.5 at the 1/4 of the string. The top graph shows the left and right traveling wave separetly and the bottom graph shows the sum of the two waves.](../assets/waveguide/gate_k05_025.gif)
 
 Here are some audio examples of the gate in action using a waveguide with 200 samples of delay and a gate positioned in the middle of the string. A triangle pluck is used to excite the string.
 
