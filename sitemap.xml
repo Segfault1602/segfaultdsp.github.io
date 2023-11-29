@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://segfaultdsp.com/posts/windowed_sinc/windowed_sinc.html</loc>
-    <lastmod>2023-11-28T18:48:06.857Z</lastmod>
-  </url>
-  <url>
-    <loc>https://segfaultdsp.com/posts/bowed_string/waveguide.html</loc>
-    <lastmod>2023-11-28T18:48:05.786Z</lastmod>
-  </url>
-  <url>
-    <loc>https://segfaultdsp.com/posts/bowed_string/bowed_string_example.html</loc>
-    <lastmod>2023-11-28T18:48:04.318Z</lastmod>
-  </url>
-  <url>
     <loc>https://segfaultdsp.com/index.html</loc>
-    <lastmod>2023-11-28T18:48:03.213Z</lastmod>
+    <lastmod>2023-11-29T22:39:06.339Z</lastmod>
   </url>
   <url>
     <loc>https://segfaultdsp.com/posts/bowed_string/bow_table.html</loc>
-    <lastmod>2023-11-28T18:48:05.082Z</lastmod>
+    <lastmod>2023-11-29T22:39:05.274Z</lastmod>
+  </url>
+  <url>
+    <loc>https://segfaultdsp.com/posts/bowed_string/waveguide.html</loc>
+    <lastmod>2023-11-29T22:39:03.588Z</lastmod>
+  </url>
+  <url>
+    <loc>https://segfaultdsp.com/posts/windowed_sinc/windowed_sinc.html</loc>
+    <lastmod>2023-11-29T22:39:02.806Z</lastmod>
+  </url>
+  <url>
+    <loc>https://segfaultdsp.com/posts/bowed_string/bowed_string_example.html</loc>
+    <lastmod>2023-11-29T22:39:04.224Z</lastmod>
   </url>
   <url>
     <loc>https://segfaultdsp.com/posts/phaseshaper/phaseshaper.html</loc>
-    <lastmod>2023-11-28T18:48:06.172Z</lastmod>
+    <lastmod>2023-11-29T22:39:05.742Z</lastmod>
   </url>
 </urlset>

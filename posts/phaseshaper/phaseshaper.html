@@ -64,7 +64,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed fullcontent">
+<body class="nav-sidebar docked nav-fixed">
 
 
 <div id="quarto-search-results"></div>
@@ -110,7 +110,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+    <div class="quarto-title column-page-right">
       <h1 class="title">Phaseshaping Oscillator</h1>
                       </div>
   </div>
@@ -124,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -215,70 +215,52 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
 
 
 
 
 <p><a href="https://github.com/Segfault1602/DaisyPatches/tree/main/Phaseshapers">Phaseshaper</a> is a eurorack oscillator built on the <a href="https://www.electro-smith.com/daisy/patch">Daisy Patch</a>. The module implement 7 phaseshaping techniques as presented in <a href="https://research.aalto.fi/en/publications/phaseshaping-oscillator-algorithms-for-musical-sound-synthesis">Phaseshaping Oscillator Algorithms For Musical Sound Synthesis</a> by Jari Kleimola, Victor Lazzarini, Joseph Timoney, and Vesa Välimäki. The C++ implementation of the phaseshaping algorithm was largely based on the original code in Python. Each phaseshaping techniques can also be modulated, as describe in the paper. The module also allow the possibility to crossfade between each waveform, providing an even wider range of timbres.</p>
 <p>Here you can find captures of the different waveforms and how they respond to modulation.</p>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Hardsync</figcaption>
 <p><img src="../assets/phaseshaper/hardsync.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Supersaw</figcaption>
 <p><img src="../assets/phaseshaper/supersaw.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Softsync</figcaption>
 <p><img src="../assets/phaseshaper/softsync.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Waveslice</figcaption>
 <p><img src="../assets/phaseshaper/waveslice.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Variable-slope: Ramp Phase</figcaption>
 <p><img src="../assets/phaseshaper/var_slope.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Variable-slope: Triangular Phase</figcaption>
 <p><img src="../assets/phaseshaper/var_tri.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption class="figure-caption">Triangle Modulation</figcaption>
@@ -287,11 +269,51 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-</div>
+<p>And here’s some audio samples of the different waveforms:</p>
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">
+Supersaw
+</p>
+<p>
+<audio src="../assets/phaseshaper/supersaw.wav" controls="">
+</audio>
+</p>
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">
+Variable-slope, Triangular phase
+</p>
+<p>
+<audio src="../assets/phaseshaper/vartri.wav" controls="">
+</audio>
+</p>
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">
+Variable-slope, Ramp phase
+</p>
+<p>
+<audio src="../assets/phaseshaper/varslope.wav" controls="">
+</audio>
+</p>
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">
+Waveslice
+</p>
+<p>
+<audio src="../assets/phaseshaper/waveslice.wav" controls="">
+</audio>
+</p>
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">
+Softsync
+</p>
+<p>
+<audio src="../assets/phaseshaper/softsync.wav" controls="">
+</audio>
+</p>
 
 
 
-</main> <!-- /main -->
+</div></div></div></div></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
