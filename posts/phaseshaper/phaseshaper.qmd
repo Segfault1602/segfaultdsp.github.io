@@ -1,6 +1,10 @@
 ---
 title: "Phaseshaping Oscillator"
 fig-cap-location: top
+fig-responsive: true
+format:
+    html:
+        page-layout: full
 ---
 
 [Phaseshaper](https://github.com/Segfault1602/DaisyPatches/tree/main/Phaseshapers) is a eurorack oscillator built on the [Daisy Patch](https://www.electro-smith.com/daisy/patch). The module implement 7 phaseshaping techniques as presented in [Phaseshaping Oscillator Algorithms For
@@ -9,7 +13,8 @@ Musical Sound Synthesis](https://research.aalto.fi/en/publications/phaseshaping-
 Here you can find captures of the different waveforms and how they respond to modulation.
 
 
-::: {layout-ncol=2}
+::: columns
+::: {.column width="50%"}
 ![Hardsync](../assets/phaseshaper/hardsync.gif)
 
 ![Supersaw](../assets/phaseshaper/supersaw.gif)
@@ -18,9 +23,46 @@ Here you can find captures of the different waveforms and how they respond to mo
 
 ![Waveslice](../assets/phaseshaper/waveslice.gif)
 
+:::
+::: {.column width="50%"}
 ![Variable-slope: Ramp Phase](../assets/phaseshaper/var_slope.gif)
 
 ![Variable-slope: Triangular Phase](../assets/phaseshaper/var_tri.gif)
 
+
 ![Triangle Modulation](../assets/phaseshaper/trimod.gif)
 :::
+:::
+
+And here's some audio samples of the different waveforms:
+
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">Supersaw</p>
+<p>
+<audio src="../assets/phaseshaper/supersaw.wav" controls=""></audio>
+</p>
+
+
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">Variable-slope, Triangular phase</p>
+<p>
+<audio src="../assets/phaseshaper/vartri.wav" controls=""></audio>
+</p>
+
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">Variable-slope, Ramp phase</p>
+<p>
+<audio src="../assets/phaseshaper/varslope.wav" controls=""></audio>
+</p>
+
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">Waveslice</p>
+<p>
+<audio src="../assets/phaseshaper/waveslice.wav" controls=""></audio>
+</p>
+
+<div class="pa1 pa2-ns tc ph4">
+<p class="fw2 pb1">Softsync</p>
+<p>
+<audio src="../assets/phaseshaper/softsync.wav" controls=""></audio>
+</p>
