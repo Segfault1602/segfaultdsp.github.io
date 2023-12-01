@@ -24,9 +24,9 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
 v_delta = np.linspace(-1, 1, 50)
-bow_force = 4
+slope = 4
 
-output = np.minimum(pow(abs(v_delta) * bow_force + 0.75, -4), 1)
+output = np.minimum(pow(abs(v_delta) * slope + 0.75, -4), 1)
 
 plt.figure(1)
 plt.plot(v_delta, output)
@@ -45,7 +45,7 @@ v_delta = np.linspace(-1, 1, 100)
 plt.figure(2)
 for f in [1, 2.5, 5]:
     output = np.minimum(pow(abs(v_delta) * f + 0.75, -4), 1)
-    plt.plot(v_delta, output, label=f'force={f}')
+    plt.plot(v_delta, output, label=f'slope={f}')
 plt.legend()
 plt.xlabel('$v_\\Delta^+$')
 plt.ylabel('Reflection Coefficient')
