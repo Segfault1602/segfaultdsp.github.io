@@ -235,6 +235,7 @@ ul.task-list li input[type="checkbox"] {
 <figcaption class="figure-caption">A delay line. The read pointer moves to the left as the delay length is decreased and to the right as the delay length is increased.</figcaption>
 </figure>
 </div>
+<p>When the length of a delay line is changed in real time, it is called a variable delay line. It is also possible to read in between two sample points by doing an interpolated read. This would make the delay line a fractional delay line. Being able to read in between samples is important as it will allow us to smoothly change the delay length in real-time.</p>
 <p>A simple waveguide can be implemented using two delay lines, one for the right traveling wave and one for the left traveling wave.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -257,13 +258,20 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 <p>Notice how the size of the waveguide does not change and instead, a reflection point is introduced at some point on the string, effectively splitting the waveguide in two. This is attempting to simulate a finger pressing on the string.</p>
-<p>To do this, we will implement a system similar to a scattering junction where energy is either reflected or transmitted at the junction of the string and the finger. A possible implementation for this is presented in Vesa Välimäki’s paper <a href="http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch4_pt2_allpass.pdf">Discrete-Time Modeling of Acoustic Tubes Using Fractional Delay Filters</a>. Instead of using an allpass filter to interpolate the signal I have opted to use a simple linear interpolator. Since we want to be able to vary the position of the junction in real-time, we would need to perform extra work to avoid the transient that would be introduced by using an allpass interpolation. A method to eliminate these transients is presented in <a href="https://quod.lib.umich.edu/i/icmc/bbp2372.1995.096/--elimination-of-transients-in-time-varying-allpass-fractional?rgn=main;view=fulltext">this paper</a> by Vesa Välimäki, Timo I. Laakso and Jonathan MacKenzie. A C++ implementation can be found in <a href="https://github.com/Segfault1602/libdsp/blob/69865c5bde2230780497931b9ff81de999e5ff11/src/waveguide_gate.cpp#L74">libdsp</a>.</p>
+<p>On top of being able to read at an arbitrary fractional point on the delay line, we will also need to be able to <em>write</em> into the delay line at a fractional point. To do this, we can use an algorithm presented in Vesa Välimäki’s paper <a href="http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch4_pt2_allpass.pdf">Discrete-Time Modeling of Acoustic Tubes Using Fractional Delay Filters</a>. While Välimäki is describing a way to implement a scattering junction, we can use the same system to implement our reflection point by changing some of the coefficient. Instead of using an allpass filter to interpolate the signal I have opted to use a simple linear interpolator. Since we want to be able to vary the position of the junction in real-time, we would need to perform extra work to avoid the transient that would be introduced by using an allpass interpolation. A method to eliminate these transients is presented in <a href="https://quod.lib.umich.edu/i/icmc/bbp2372.1995.096/--elimination-of-transients-in-time-varying-allpass-fractional?rgn=main;view=fulltext">this paper</a> by Vesa Välimäki, Timo I. Laakso and Jonathan MacKenzie. A C++ implementation can be found in <a href="https://github.com/Segfault1602/libdsp/blob/69865c5bde2230780497931b9ff81de999e5ff11/src/waveguide_gate.cpp#L74">libdsp</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="http://users.spa.aalto.fi/vpv/publications/vesan_vaitos/ch4_pt2_allpass.pdf"><img src="../assets/waveguide/fig4_33_vesa.png" class="img-fluid figure-img"></a></p>
 <figcaption class="figure-caption">Block diagram of the scattering junction by Vesa Välimäki</figcaption>
 </figure>
 </div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/waveguide/waveguide_gate_fig.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Block diagram of the waveguide gate. The allpass interpolator were change to linear interpolator and the coefficient were changed to conserve energy through the system.</figcaption>
+</figure>
+</div>
+<p>The resulting system is what we will now call a waveguide gate. The coefficients ‘r’ is what I will call the gate coefficient. With a value of 1, the gate is fully closed and all the energy is reflected. With a value of 0, the gate is fully open and all the energy is transmitted. With a value between 0 and 1, the gate is partially open and some of the energy is reflected and some is transmitted.</p>
 <p>Here it is in action when the gate coefficient is set to 1:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">

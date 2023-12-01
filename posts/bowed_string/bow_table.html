@@ -268,9 +268,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.ticker <span class="im">import</span> MultipleLocator</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>v_delta <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>bow_force <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> np.minimum(<span class="bu">pow</span>(<span class="bu">abs</span>(v_delta) <span class="op">*</span> bow_force <span class="op">+</span> <span class="fl">0.75</span>, <span class="op">-</span><span class="dv">4</span>), <span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> np.minimum(<span class="bu">pow</span>(<span class="bu">abs</span>(v_delta) <span class="op">*</span> slope <span class="op">+</span> <span class="fl">0.75</span>, <span class="op">-</span><span class="dv">4</span>), <span class="dv">1</span>)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>plt.figure(<span class="dv">1</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.plot(v_delta, output)</span>
@@ -291,7 +291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.figure(<span class="dv">2</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> [<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">5</span>]:</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> np.minimum(<span class="bu">pow</span>(<span class="bu">abs</span>(v_delta) <span class="op">*</span> f <span class="op">+</span> <span class="fl">0.75</span>, <span class="op">-</span><span class="dv">4</span>), <span class="dv">1</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    plt.plot(v_delta, output, label<span class="op">=</span><span class="ss">f'force=</span><span class="sc">{</span>f<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    plt.plot(v_delta, output, label<span class="op">=</span><span class="ss">f'slope=</span><span class="sc">{</span>f<span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'$v_</span><span class="ch">\\</span><span class="st">Delta^+$'</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Reflection Coefficient'</span>)</span>
