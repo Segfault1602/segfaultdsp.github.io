@@ -3,7 +3,7 @@ title: Windowed sinc resampling
 jupyter: python3
 ---
 
-While there is a lot of theoritical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the implementation are usually heavily optimized and designed to support real-time scenario. This article will try to provide a simple implementation of the algorithm based on the CCRMA description [article](https://ccrma.stanford.edu/~jos/resample/Implementation.html). You can find a plain Python script containing the code used in this article [here](https://github.com/Segfault1602/libdsp/blob/main/scripts/sinc_interpolate_ccrma.py).
+While there is a lot of theoretical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the implementation are usually heavily optimized and designed to support real-time scenario. This article will try to provide a simple implementation of the algorithm based on the CCRMA description [article](https://ccrma.stanford.edu/~jos/resample/Implementation.html). You can find a plain Python script containing the code used in this article [here](https://github.com/Segfault1602/libdsp/blob/main/scripts/sinc_interpolate_ccrma.py).
 
 
 First, let's get our python imports out of the way.
@@ -19,7 +19,7 @@ from scipy import signal
 from math import ceil
 ```
 
-Let's define a function that will build our sinc table for us. The sinc table will only contain the "right-wing" of the symmetric FIR filter. This function will also return a table of differences between successive FIR samples which will be useful to speed up our linear interpolation later on.
+Let's define a function that will build our sinc table for us. The sinc table will only contain the "right wing" of the symmetric FIR filter. This function will also return a table of differences between successive FIR samples which will be useful to speed up our linear interpolation later on.
 
 ```{python}
 def build_sinc_table(num_zeros, samples_per_crossing):
