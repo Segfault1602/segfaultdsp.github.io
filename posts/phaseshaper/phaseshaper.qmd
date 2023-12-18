@@ -7,8 +7,8 @@ format:
         page-layout: full
 ---
 
-[Phaseshaper](https://github.com/Segfault1602/DaisyPatches/tree/main/Phaseshapers) is a eurorack oscillator built on the [Daisy Patch](https://www.electro-smith.com/daisy/patch). The module implement 7 phaseshaping techniques as presented in [Phaseshaping Oscillator Algorithms For
-Musical Sound Synthesis](https://research.aalto.fi/en/publications/phaseshaping-oscillator-algorithms-for-musical-sound-synthesis) by Jari Kleimola, Victor Lazzarini, Joseph Timoney, and Vesa Välimäki. The C++ implementation of the phaseshaping algorithm was largely based on the original code in Python. Each phaseshaping techniques can also be modulated, as describe in the paper. The module also allow the possibility to crossfade between each waveform, providing an even wider range of timbres.
+[Phaseshaper](https://github.com/Segfault1602/DaisyPatches/tree/main/Phaseshapers) is a eurorack oscillator built on the [Daisy Patch](https://www.electro-smith.com/daisy/patch). The module implements 7 phaseshaping techniques as presented in [Phaseshaping Oscillator Algorithms For
+Musical Sound Synthesis](https://research.aalto.fi/en/publications/phaseshaping-oscillator-algorithms-for-musical-sound-synthesis) by Jari Kleimola, Victor Lazzarini, Joseph Timoney, and Vesa Välimäki. The C++ implementation of the phaseshaping algorithm was largely based on the original code in Python. Each phaseshaping technique can also be modulated, as described in the paper. The module also allows the possibility to crossfade between each waveform, providing an even wider range of timbres.
 
 Here you can find captures of the different waveforms and how they respond to modulation.
 
