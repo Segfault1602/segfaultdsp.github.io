@@ -21,6 +21,10 @@ website:
     style: "docked"
     search: true
     contents: auto
+  google-analytics:
+    tracking-id: "G-210NT6BWYX"
+    anonymize-ip: true
+    storage: none
 
 format:
   html:
