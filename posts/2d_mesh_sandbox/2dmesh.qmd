@@ -4,7 +4,7 @@ jupyter: python3
 bibliography: references.bib
 csl: ieee.csl
 format: html
-date: last-modified
+date: 12-09-2024
 date-modified: last-modified
 description: |
   Presentation of a sandbox application to experiment with 2D digital waveguides mesh
