@@ -3,7 +3,9 @@ title: "2D Mesh Sandbox"
 jupyter: python3
 bibliography: references.bib
 csl: ieee.csl
-format: html
+format:
+    html:
+        embed-resources: true
 date: 12-09-2024
 date-modified: last-modified
 description: |
@@ -11,8 +13,7 @@ description: |
 author:
   - name: Alexandre St-Onge
     url: https://segfaultdsp.com
-# citation:
-#   url: https://segfaultdsp.com/
+
 ---
 
 # A sandbox application to experiment with 2D digital waveguide mesh
@@ -296,5 +297,7 @@ Rectilinear mesh
 ![](../assets/2dmesh/derived_parameters.png)
 
 :::
+
+{{< video https://youtu.be/QOJ2TAFrU5Y >}}
 
 ## References
