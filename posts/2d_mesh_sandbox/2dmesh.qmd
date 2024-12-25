@@ -84,50 +84,50 @@ The simplest rimguide will have a minimal delay of 1.5 samples. A 1 sample delay
 Given this information, the radius of the mesh will need to be adjusted to account for the delay of the rimguides. This new radius (red circle in @fig-rimguides) is given by the following formula:
 
 \begin{equation*}
-r_{new} = r_{old} - \frac{\tau_{min}}{2} * s_d
+r_{new} = r_{old} - \frac{\tau_{min}}{2} * s_d\quad,
 \end{equation*}
 
-Where $r_{old}$ is the radius of the mesh without rimguides, $\tau_{min} = 1.5$ is the minimal delay of the rimguides and $s_d$ is the spatial distance between two nodes of the mesh. The division by 2 is due to the fact that the rimguide models the wave traveling from the boundary node to the rim and back.
+where $r_{old}$ is the radius of the mesh without rimguides, $\tau_{min} = 1.5$ is the minimal delay of the rimguides and $s_d$ is the spatial distance between two nodes of the mesh. The division by 2 is due to the fact that the rimguide models the wave traveling from the boundary node to the rim and back.
 
 The spatial distance $s_d$ is given by the following formula:
 \begin{equation*}
-s_d = \sqrt{2} \frac{c}{f_s}
+s_d = \sqrt{2} \frac{c}{f_s}\quad,
 \end{equation*}
 
-Where $c$ is the speed of sound in the membrane and $f_s$ is the sampling frequency. The $\sqrt{2}$ factor is due to the nominal wave speed in a 2D mesh [-@duyne_physical_1993][-@fontana_physical_1998].
+where $c$ is the speed of sound in the membrane and $f_s$ is the sampling frequency. The $\sqrt{2}$ factor is due to the nominal wave speed in a 2D mesh [-@duyne_physical_1993][-@fontana_physical_1998].
 
 The speed of sound $c$ in the membrane can be found with the following formula[-@laird_physical_2001]:
 \begin{equation*}
-c = \sqrt{\frac{T}{\sigma}}
+c = \sqrt{\frac{T}{\sigma}}\quad,
 \end{equation*}
 
-Where $T$ is the tension of the membrane in $\frac{N}{m}$ and $\sigma$ is the density of the membrane in $\frac{kg}{m^2}$.
+where $T$ is the tension of the membrane in $\frac{N}{m}$ and $\sigma$ is the density of the membrane in $\frac{kg}{m^2}$.
 
 
 ### Viscous friction
 
-So far the model is lossless. To account for viscous friction, we can add a lowpass filter to our rimguides. The coefficient for the lowpass filter is given by the following formula [-@laird_physical_2001]:
+So far the model is lossless. To account for viscous friction, we can add a first order IIR lowpass filter to our rimguides. The coefficient for the lowpass filter is given by the following formula [-@laird_physical_2001]:
 
 \begin{equation*}
-\alpha =\frac{1 - G(\omega)\left(G(\omega)\cos(\omega) + \sqrt{G(\omega)^2(\cos^2\omega-1)+2-2\cos\omega}\right)}{G(\omega)^2 - 1}
+\alpha =\frac{1 - G(\omega)\left(G(\omega)\cos(\omega) + \sqrt{G(\omega)^2(\cos^2\omega-1)+2-2\cos\omega}\right)}{G(\omega)^2 - 1}\quad,
 \end{equation*}
 
-Where $G(\omega)$ is the gain of the filter at frequency $\omega$. The gain of the filter is given by the following formulas:
+where $G(\omega)$ is the gain of the filter at frequency $\omega$. The gain of the filter is given by the following formulas:
 
 \begin{align*}
 G(\omega) &= 10 ^ \frac{L_B(\omega)}{20}\\
-L_B(\omega) &= L_\omega \frac{2r}{c}
+L_B(\omega) &= L_\omega \frac{2r}{c}\quad,
 \end{align*}
 
-Where $L_\omega$ is the desired decay rate at frequency $\omega$, $r$ is the radius of the membrane and $c$ is the speed of sound in the membrane.
+where $L_\omega$ is the desired decay rate at frequency $\omega$, $r$ is the radius of the membrane and $c$ is the speed of sound in the membrane.
 
 Since this lowpass filter introduces an additional delay into our rimguide, the radius of the mesh will need to be adjusted again to account for this delay. The delay incurred by the lowpass filter is given by the following formula:
 
 \begin{equation*}
-\tau_{lp} = \frac{\arctan(\frac{-\alpha sin\omega}{1 + \alpha cos\omega})}{\omega}
+\tau_{lp} = \frac{\arctan(\frac{-\alpha sin\omega}{1 + \alpha cos\omega})}{\omega}\quad,
 \end{equation*}
 
-Where $\omega$ is the cutoff frequency of the lowpass filter in radians per second.
+where $\omega$ is the cutoff frequency of the lowpass filter in radians per second.
 
 ### Preliminary results
 
@@ -137,9 +137,11 @@ Here's what the current model sounds like when excited with a simple raised cosi
 
 32 cm radius, center excitation
 {{< audio file="../assets/2dmesh/32_center.wav">}}
+![](../assets//2dmesh/32_center_spectra.png){width=300}
 
 32 cm radius, off-center excitation
 {{< audio file="../assets/2dmesh/32_offcenter.wav">}}
+![](../assets//2dmesh/32_offcenter_spectra.png){width=300}
 
 :::
 
@@ -154,9 +156,11 @@ The first thing I wanted to experiment with was the minimum delay of the rimguid
 ::: {layout-ncol="2"}
 
 Spectrum of a 32 cm radius membrane with 1.5 sample minimum delay rimguides (red) and 3 sample minimum delay rimguides (blue)
-![](../assets/2dmesh/rimguide_delay_3.png){width=300 .lightbox}
 
 Spectrum of a 32 cm radius membrane with 1.5 sample minimum delay rimguides (red) and 9 sample minimum delay rimguides (blue)
+
+![](../assets/2dmesh/rimguide_delay_3.png){width=300 .lightbox}
+
 ![](../assets/2dmesh/rimguide_delay_9.png){width=300 .lightbox}
 :::
 
@@ -260,6 +264,10 @@ With 4 additional diffusion filters
 {{< audio file="../assets/2dmesh/mesh_extra_diffusion.wav">}}
 :::
 
+Here's a block diagram of the rimguide with optional diffusion filters:
+
+![](../assets/2dmesh/rimguide_block_diagram.png)
+
 ## 2D Mesh Sandbox
 
 2D Mesh Sandbox is a C++ application that allows you to experiment with the physical model of a circular membrane using 2D digital waveguides. The application uses [Dear ImGui](https://github.com/ocornut/imgui) and [ImPlot](https://github.com/epezent/implot) for the user interface, [RtAudio](https://github.com/thestk/rtaudio) for audio output and [libsndfile](https://github.com/libsndfile/libsndfile) for audio file output and input. The source code is available on [GitHub](https://github.com/Segfault1602/2DMeshSandbox)
@@ -298,6 +306,6 @@ Rectilinear mesh
 
 :::
 
-{{< video https://youtu.be/QOJ2TAFrU5Y >}}
+{{< video https://youtu.be/XLE6LftctZg >}}
 
 ## References
