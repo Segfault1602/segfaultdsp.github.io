@@ -11,7 +11,7 @@
     "href": "index.html#projects",
     "title": "Segfault DSP",
     "section": "Projects",
-    "text": "Projects\n\nlibdsp: Simple C++ audio dsp library.\nBowedVst Polyphonic bowed string VST using JUCE.\nLinnLED: Python scripts used to configure the LED on the Linnstrument to match microtonal scales.\nDaisy Patch for VCV Rack: Implementation of the Daisy Patch eurorack module in VCV Rack. Allows easy prototyping of firmware for the Daisy Patch in VCV Rack."
+    "text": "Projects\n\nlibdsp: Simple C++ audio dsp library.\n2D Mesh Sandbox: C++ application for simulating 2D meshes using digital waveguides.\nBowedVst Polyphonic bowed string VST using JUCE.\nLinnLED: Python scripts used to configure the LED on the Linnstrument to match microtonal scales.\nDaisy Patch for VCV Rack: Implementation of the Daisy Patch eurorack module in VCV Rack. Allows easy prototyping of firmware for the Daisy Patch in VCV Rack."
   },
   {
     "objectID": "index.html#articles",
