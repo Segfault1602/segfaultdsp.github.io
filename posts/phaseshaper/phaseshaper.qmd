@@ -5,6 +5,10 @@ fig-responsive: true
 format:
     html:
         page-layout: full
+date: 10-03-2023
+author:
+  - name: Alexandre St-Onge
+    url: https://segfaultdsp.com
 ---
 
 [Phaseshaper](https://github.com/Segfault1602/DaisyPatches/tree/main/Phaseshapers) is a eurorack oscillator built on the [Daisy Patch](https://www.electro-smith.com/daisy/patch). The module implements 7 phaseshaping techniques as presented in [Phaseshaping Oscillator Algorithms For
@@ -41,6 +45,7 @@ And here's some audio samples of the different waveforms:
 <p>
 <audio src="../assets/phaseshaper/supersaw.wav" controls=""></audio>
 </p>
+</div>
 
 
 <div class="pa1 pa2-ns tc ph4">
@@ -48,21 +53,25 @@ And here's some audio samples of the different waveforms:
 <p>
 <audio src="../assets/phaseshaper/vartri.wav" controls=""></audio>
 </p>
+</div>
 
 <div class="pa1 pa2-ns tc ph4">
 <p class="fw2 pb1">Variable-slope, Ramp phase</p>
 <p>
 <audio src="../assets/phaseshaper/varslope.wav" controls=""></audio>
 </p>
+</div>
 
 <div class="pa1 pa2-ns tc ph4">
 <p class="fw2 pb1">Waveslice</p>
 <p>
 <audio src="../assets/phaseshaper/waveslice.wav" controls=""></audio>
 </p>
+</div>
 
 <div class="pa1 pa2-ns tc ph4">
 <p class="fw2 pb1">Softsync</p>
 <p>
 <audio src="../assets/phaseshaper/softsync.wav" controls=""></audio>
 </p>
+</div>

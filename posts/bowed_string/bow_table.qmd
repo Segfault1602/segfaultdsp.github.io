@@ -6,6 +6,10 @@ format:
   html:
     code-fold: true
     code-summary: "Show the code"
+date: 09-16-2023
+author:
+  - name: Alexandre St-Onge
+    url: https://segfaultdsp.com
 ---
 
 Now that we have our working waveguide, we need something to excite it. This is done with the help of

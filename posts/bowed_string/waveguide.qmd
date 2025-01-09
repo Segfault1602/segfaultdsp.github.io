@@ -6,6 +6,10 @@ format:
   html:
     code-fold: true
     code-summary: "Show the code"
+date: 11-15-2023
+author:
+  - name: Alexandre St-Onge
+    url: https://segfaultdsp.com
 ---
 
 In this series, I will walk through the process of building a bowed string model using a digital waveguide. If you are not familiar with the technique, Julius O. Smith wrote a great book on the subject: [Physical Audio Signal Processing](https://ccrma.stanford.edu/~jos/pasp/Digital_Waveguides.html). The particular model I will build can also be found in this book [here](https://ccrma.stanford.edu/~jos/pasp/Digital_Waveguide_Bowed_String.html).

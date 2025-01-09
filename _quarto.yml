@@ -13,6 +13,7 @@ execute:
 website:
   title: "SegfaultDSP"
   reader-mode: true
+  favicon: "favicon.svg"
   navbar:
     right:
       - icon: github

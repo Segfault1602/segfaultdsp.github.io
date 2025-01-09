@@ -1,6 +1,10 @@
 ---
 title: Windowed sinc resampling
 jupyter: python3
+date: 09-16-2023
+author:
+  - name: Alexandre St-Onge
+    url: https://segfaultdsp.com
 ---
 
 While there is a lot of theoretical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the implementation are usually heavily optimized and designed to support real-time scenario. This article will try to provide a simple implementation of the algorithm based on the CCRMA description [article](https://ccrma.stanford.edu/~jos/resample/Implementation.html). You can find a plain Python script containing the code used in this article [here](https://github.com/Segfault1602/libdsp/blob/main/scripts/sinc_interpolate_ccrma.py).
