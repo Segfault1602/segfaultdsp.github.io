@@ -11,7 +11,7 @@ description: |
 author:
   - name: Alexandre St-Onge
     url: https://segfaultdsp.com
-
+image: ../assets/2dmesh/mesh_sandbox.png
 ---
 
 # A sandbox application to experiment with 2D digital waveguide mesh

@@ -3,6 +3,7 @@ title: "Segfault DSP"
 listing:
     type: grid
     image-align: left
+    sort: "date desc"
 page-layout: full
 ---
 
@@ -11,6 +12,7 @@ Welcome to my personal page!
 ## Projects
 
 - [libdsp](https://github.com/Segfault1602/libdsp): Simple C++ audio dsp library.
+- [2D Mesh Sandbox](https://github.com/Segfault1602/2DMeshSandbox): C++ application for simulating 2D meshes using digital waveguides.
 - [BowedVst](https://github.com/Segfault1602/BowedVst) Polyphonic bowed string VST using JUCE.
 - [LinnLED](https://github.com/Segfault1602/LinnLED): Python scripts used to configure the LED on the Linnstrument to match microtonal scales.
 - [Daisy Patch for VCV Rack](https://github.com/Segfault1602/vcv_daisypatch): Implementation of the [Daisy Patch](https://www.electro-smith.com/daisy/patch) eurorack module in VCV Rack. Allows easy prototyping of firmware for the Daisy Patch in VCV Rack.
