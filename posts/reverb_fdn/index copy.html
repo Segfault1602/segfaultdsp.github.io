@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alexandre St-Onge">
+<meta name="dcterms.date" content="2024-12-09">
+<meta name="description" content="Presentation of a sandbox application to experiment with 2D digital waveguides mesh">
+
+<title>2D Mesh Sandbox – SegfaultDSP</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6d5f49080fd7a04518cb6db3008564bf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-210NT6BWYX"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+ 
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'analytics_storage': 'denied'
+  });
+gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">SegfaultDSP</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/segfault1602"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/Membrain/index.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/reverb_fdn/index.html">Automatic Optimization of Feedback Delay Networks</a></li><li class="breadcrumb-item"><a href="../../posts/reverb_fdn/index copy.html">2D Mesh Sandbox</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/Membrain/index.html">Posts</a></li><li class="breadcrumb-item"><a href="../../posts/reverb_fdn/index.html">Automatic Optimization of Feedback Delay Networks</a></li><li class="breadcrumb-item"><a href="../../posts/reverb_fdn/index copy.html">2D Mesh Sandbox</a></li></ol></nav>
+      <h1 class="title">2D Mesh Sandbox</h1>
+                  <div>
+        <div class="description">
+          <p>Presentation of a sandbox application to experiment with 2D digital waveguides mesh</p>
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://segfaultdsp.com">Alexandre St-Onge</a> </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 9, 2024</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">April 10, 2025</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Posts</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/Membrain/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Membrain: Extending the drumhead</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/2d_mesh_sandbox/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2D Mesh Sandbox</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Bowed String</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/bowed_string/waveguide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BowedString Part 1: Digital Waveguide</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/bowed_string/bow_table.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BowedString Part 2: Bow Table</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/bowed_string/bowed_string_example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BowedString Part 3: BowedString audio example</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../posts/reverb_fdn/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automatic Optimization of Feedback Delay Networks</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/reverb_fdn/index copy.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">2D Mesh Sandbox</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Phaseshaper</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/phaseshaper/phaseshaper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Phaseshaping Oscillator</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Windowed Sinc</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/windowed_sinc/windowed_sinc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Windowed sinc resampling</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="a-sandbox-application-to-experiment-with-2d-digital-waveguide-mesh" class="level1">
+<h1>A sandbox application to experiment with 2D digital waveguide mesh</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In this paper, I will present a sandbox application made to experiment with physical model of circular membranes using 2D digital waveguides.</p>
+<p>While my goal for this project was to model the multiple components of a drum, it became clear that simply modeling a circular membrane that sounds like a drum is already a complex task. This is why I decided to focus on this part of the project for now. The sandbox application I am presenting here should make it easier to experiment with all of the different aspects present in the physical model of a circular membrane implemented using 2D digital waveguides.</p>
+</section>
+<section id="physical-modeling-of-a-circular-membrane" class="level2">
+<h2 class="anchored" data-anchor-id="physical-modeling-of-a-circular-membrane">Physical Modeling of a circular membrane</h2>
+<p>The first step in modeling a circular membrane, or any 2D object for that matter, is to solve the 2D wave equation:</p>
+<p><span class="math display">\[\begin{equation*}
+u_{tt} = c^2 \Delta u
+\end{equation*}\]</span></p>
+<div style="float: right; margin: 5px;">
+<div id="fig-rectilinear_mesh" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rectilinear_mesh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/rectilinear_mesh.png" class="img-fluid figure-img" width="200">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rectilinear_mesh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Rectilinear mesh
+</figcaption>
+</figure>
+</div>
+<div id="fig-triangular_mesh" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-triangular_mesh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/triangular_mesh.png" class="img-fluid figure-img" width="200">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-triangular_mesh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Triangular mesh
+</figcaption>
+</figure>
+</div>
+</div>
+<p>As demonstrated by Van Duyne and Smith <span class="citation" data-cites="duyne_physical_1993"><a href="#ref-duyne_physical_1993" role="doc-biblioref"><strong>duyne_physical_1993?</strong></a></span>, the 2D digital waveguide mesh can be used to accurately model the wave equation. As opposed to its 1D counterpart, there is more than one way to implement a 2D digital waveguide mesh. Maybe the most common way is to use the rectilinear mesh, composed of a grid of interconnected 1D waveguides.</p>
+<p>While probably the simplest mesh to implement, the rectilinear mesh suffers from quite a bit of dispersion error which can result in mistuning of the higher modes of the membrane<span class="citation" data-cites="duyne_physical_1993"><a href="#ref-duyne_physical_1993" role="doc-biblioref"><strong>duyne_physical_1993?</strong></a></span>.</p>
+<p>Another popular mesh configuration is the triangular mesh. Composed of a series of 6-port junctions, the triangular mesh is slightly more complex to implement but has the advantage of having a much lower dispersion error than the rectilinear mesh <span class="citation" data-cites="fontana_physical_1998"><a href="#ref-fontana_physical_1998" role="doc-biblioref"><strong>fontana_physical_1998?</strong></a></span>.</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-rectilinear_error" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rectilinear_error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/dispersion_rectilinear.png" class="img-fluid figure-img" width="240">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rectilinear_error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Dispersion error of the rectilinear mesh<span class="citation" data-cites="fontana_physical_1998"><a href="#ref-fontana_physical_1998" role="doc-biblioref"><strong>fontana_physical_1998?</strong></a></span>
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-triangular_error" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-triangular_error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/dispersion_triangular.png" class="img-fluid figure-img" width="240">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-triangular_error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Dispersion error of the triangular mesh<span class="citation" data-cites="fontana_physical_1998"><a href="#ref-fontana_physical_1998" role="doc-biblioref"><strong>fontana_physical_1998?</strong></a></span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>The rectilinear mesh is implemented by the <a href="https://github.com/Segfault1602/2DMeshSandbox/blob/ee003c0bfdd6dbeb9e87a7d6e1907e1a85ac7f17/src/mesh_graph/rectilinear_mesh.cpp">RectilinearMesh</a> class and the triangular mesh is implemented by the <a href="https://github.com/Segfault1602/2DMeshSandbox/blob/ee003c0bfdd6dbeb9e87a7d6e1907e1a85ac7f17/src/mesh_graph/trimesh.cpp">TriMesh</a> class.</p>
+<section id="modeling-the-circular-boundary" class="level3">
+<h3 class="anchored" data-anchor-id="modeling-the-circular-boundary">Modeling the circular boundary</h3>
+<p>The next step is to model the circular boundary. By using the rectilinear or triangular mesh alone, the best we can do is to approximate the circular boundary given the naturally jagged edge of the meshes. To get a more accurate representation of the circular boundary, Laird proposes the use of special 1D waveguides called ‘rimguides’ <span class="citation" data-cites="laird_physical_2001"><a href="#ref-laird_physical_2001" role="doc-biblioref"><strong>laird_physical_2001?</strong></a></span>. For each junction on the boundary of the membrane, a rimguide is connected to that junction. The length of each rimguide is set such that a wave traveling from one side of the membrane to the other will take the same amount of time as it would in an ideal membrane. <a href="#fig-rimguides" class="quarto-xref">Figure&nbsp;5</a> shows a triangular mesh with rimguides (green nodes and dotted lines) connected to each boundary node (in blue).</p>
+<div id="fig-rimguides" class="quarto-float quarto-figure quarto-figure-left anchored" data-fig-align="left">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rimguides-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/rimguides.png" class="img-fluid quarto-figure quarto-figure-left figure-img" width="300">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rimguides-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Triangular mesh with rimguides
+</figcaption>
+</figure>
+</div>
+<p>The simplest rimguide will have a minimal delay of 1.5 samples. A 1 sample delay is incurred due to the nature of the waveguide mesh itself and the 0.5 sample delay is due to the fact that allpass interpolation is used inside the rimguide and that type of interpolation works best for delays between 0.5 and 1.5 samples.</p>
+<p>Given this information, the radius of the mesh will need to be adjusted to account for the delay of the rimguides. This new radius (red circle in <a href="#fig-rimguides" class="quarto-xref">Figure&nbsp;5</a>) is given by the following formula:</p>
+<p><span class="math display">\[\begin{equation*}
+r_{new} = r_{old} - \frac{\tau_{min}}{2} * s_d\quad,
+\end{equation*}\]</span></p>
+<p>where <span class="math inline">\(r_{old}\)</span> is the radius of the mesh without rimguides, <span class="math inline">\(\tau_{min} = 1.5\)</span> is the minimal delay of the rimguides and <span class="math inline">\(s_d\)</span> is the spatial distance between two nodes of the mesh. The division by 2 is due to the fact that the rimguide models the wave traveling from the boundary node to the rim and back.</p>
+<p>The spatial distance <span class="math inline">\(s_d\)</span> is given by the following formula: <span class="math display">\[\begin{equation*}
+s_d = \sqrt{2} \frac{c}{f_s}\quad,
+\end{equation*}\]</span></p>
+<p>where <span class="math inline">\(c\)</span> is the speed of sound in the membrane and <span class="math inline">\(f_s\)</span> is the sampling frequency. The <span class="math inline">\(\sqrt{2}\)</span> factor is due to the nominal wave speed in a 2D mesh [<span class="citation" data-cites="duyne_physical_1993"><a href="#ref-duyne_physical_1993" role="doc-biblioref"><strong>duyne_physical_1993?</strong></a></span>]<span class="citation" data-cites="fontana_physical_1998"><a href="#ref-fontana_physical_1998" role="doc-biblioref"><strong>fontana_physical_1998?</strong></a></span>.</p>
+<p>The speed of sound <span class="math inline">\(c\)</span> in the membrane can be found with the following formula<span class="citation" data-cites="laird_physical_2001"><a href="#ref-laird_physical_2001" role="doc-biblioref"><strong>laird_physical_2001?</strong></a></span>: <span class="math display">\[\begin{equation*}
+c = \sqrt{\frac{T}{\sigma}}\quad,
+\end{equation*}\]</span></p>
+<p>where <span class="math inline">\(T\)</span> is the tension of the membrane in <span class="math inline">\(\frac{N}{m}\)</span> and <span class="math inline">\(\sigma\)</span> is the density of the membrane in <span class="math inline">\(\frac{kg}{m^2}\)</span>.</p>
+</section>
+<section id="viscous-friction" class="level3">
+<h3 class="anchored" data-anchor-id="viscous-friction">Viscous friction</h3>
+<p>So far the model is lossless. To account for viscous friction, we can add a first order IIR lowpass filter to our rimguides. The coefficient for the lowpass filter is given by the following formula <span class="citation" data-cites="laird_physical_2001"><a href="#ref-laird_physical_2001" role="doc-biblioref"><strong>laird_physical_2001?</strong></a></span>:</p>
+<p><span class="math display">\[\begin{equation*}
+\alpha =\frac{1 - G(\omega)\left(G(\omega)\cos(\omega) + \sqrt{G(\omega)^2(\cos^2\omega-1)+2-2\cos\omega}\right)}{G(\omega)^2 - 1}\quad,
+\end{equation*}\]</span></p>
+<p>where <span class="math inline">\(G(\omega)\)</span> is the gain of the filter at frequency <span class="math inline">\(\omega\)</span>. The gain of the filter is given by the following formulas:</p>
+<p><span class="math display">\[\begin{align*}
+G(\omega) &amp;= 10 ^ \frac{L_B(\omega)}{20}\\
+L_B(\omega) &amp;= L_\omega \frac{2r}{c}\quad,
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(L_\omega\)</span> is the desired decay rate at frequency <span class="math inline">\(\omega\)</span>, <span class="math inline">\(r\)</span> is the radius of the membrane and <span class="math inline">\(c\)</span> is the speed of sound in the membrane.</p>
+<p>Since this lowpass filter introduces an additional delay into our rimguide, the radius of the mesh will need to be adjusted again to account for this delay. The delay incurred by the lowpass filter is given by the following formula:</p>
+<p><span class="math display">\[\begin{equation*}
+\tau_{lp} = \frac{\arctan(\frac{-\alpha sin\omega}{1 + \alpha cos\omega})}{\omega}\quad,
+\end{equation*}\]</span></p>
+<p>where <span class="math inline">\(\omega\)</span> is the cutoff frequency of the lowpass filter in radians per second.</p>
+</section>
+<section id="preliminary-results" class="level3">
+<h3 class="anchored" data-anchor-id="preliminary-results">Preliminary results</h3>
+<p>Here’s what the current model sounds like when excited with a simple raised cosine impulse:</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>32 cm radius, center excitation </p><figure class="figure"><audio controls="" src="../assets/2dmesh/32_center.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure> <img src="../assets//2dmesh/32_center_spectra.png" class="img-fluid" width="300"><p></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>32 cm radius, off-center excitation </p><figure class="figure"><audio controls="" src="../assets/2dmesh/32_offcenter.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure> <img src="../assets//2dmesh/32_offcenter_spectra.png" class="img-fluid" width="300"><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="experimentation" class="level2">
+<h2 class="anchored" data-anchor-id="experimentation">Experimentation</h2>
+<p>Once I had a working model of a circular membrane, I wanted to experiment with different aspect of the model.</p>
+<section id="adjusting-the-minimum-delay-of-the-rimguides" class="level3">
+<h3 class="anchored" data-anchor-id="adjusting-the-minimum-delay-of-the-rimguides">Adjusting the minimum delay of the rimguides</h3>
+<p>The first thing I wanted to experiment with was the minimum delay of the rimguides. In theory, we want to minimize the delay of the rimguides to minimize the error introduced by the rimguides. However, a longer rimguide delay will also reduce the number of junctions needed to model the membrane, so I was curious to see exactly how much of a difference the delay of the rimguides would make.</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Spectrum of a 32 cm radius membrane with 1.5 sample minimum delay rimguides (red) and 3 sample minimum delay rimguides (blue)</p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Spectrum of a 32 cm radius membrane with 1.5 sample minimum delay rimguides (red) and 9 sample minimum delay rimguides (blue)</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="../assets/2dmesh/rimguide_delay_3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../assets/2dmesh/rimguide_delay_3.png" class="img-fluid" width="300"></a></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="../assets/2dmesh/rimguide_delay_9.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="../assets/2dmesh/rimguide_delay_9.png" class="img-fluid" width="300"></a></p>
+</div>
+</div>
+</div>
+<p>While the difference between 1.5 sample minimum delay rimguides and 3 sample minimum delay rimguides is quite small, we can see a noticeable pitch shift with 9 sample minimum delay rimguides. While the mesh with 1.5 sample minimum delay rimguides requires 1519 junctions, this number is reduced to 1015 junctions with a 9 sample minimum delay rimguides. Most importantly, the characteristic modes of the membrane are still present with 9 sample minimum delay rimguides.</p>
+</section>
+<section id="time-varying-rimguides-delay" class="level3">
+<h3 class="anchored" data-anchor-id="time-varying-rimguides-delay">Time-varying rimguides delay</h3>
+<p>Anothe reason why I wanted to experiment with the rimguides delay is that I wanted to see if I could use time-varying delay to model the effect of the membrane stretching or shrinking. Time-varying delaylines are common in a lot of digital audio effects (chorus, flanger, etc.) and are also often used in 1D digital waveguides to model vibrato or pitch bending.</p>
+<p>Several modulation techniques were tested to modulate the delay of the rimguides. For all of these techniques, a sine wave was used as the modulation signal.</p>
+<dl>
+<dt>Sync</dt>
+<dd>
+Each rimguide is modulated by the same sine wave (same phase, frequency, and amplitude). This creates a vibrato effect.
+</dd>
+</dl>
+<figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_vibrato.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure>
+<dl>
+<dt>Phase Offset</dt>
+<dd>
+Each rimguide is modulated by the same sine wave offset by a certain phase amount in relation to its neighbor. The effect on the sound is much more subtle than the sync modulation.
+</dd>
+</dl>
+<figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_offset.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure>
+<dl>
+<dt>Random Frequency</dt>
+<dd>
+Each rimguide is modulated by a sine wave with a random frequency. The random frequency is controlled by secondary parameters that dictate how much the frequency can vary from the base frequency.
+</dd>
+</dl>
+<figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_random.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure>
+<dl>
+<dt>Random Frequency and Amplitude</dt>
+<dd>
+Each rimguide is modulated by a sine wave with a random frequency and amplitude. The random frequency and amplitude are controlled by secondary parameters that dictate how much the frequency and amplitude can vary from the base frequency and amplitude.
+</dd>
+</dl>
+<figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_random_amp.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure>
+</section>
+<section id="automatic-pitch-bend" class="level3">
+<h3 class="anchored" data-anchor-id="automatic-pitch-bend">Automatic pitch bend</h3>
+<p>A well known nonlinear effect of a drum membrane is the pitch glide downward that occurs when the membrane is struck hard<span class="citation" data-cites="fletcher_notitle_1998"><a href="#ref-fletcher_notitle_1998" role="doc-biblioref"><strong>fletcher_notitle_1998?</strong></a></span>. By adding a simple envelope follower inside the rimguides, I was able to modulate the delay of the rimguides based on the amplitude of the pressure wave at the boundary. The envelope follower is implemented as a simple two poles lowpass filter.</p>
+<figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_pitchbend.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure>
+</section>
+<section id="clamped-vs-free-boundary-conditions" class="level3">
+<h3 class="anchored" data-anchor-id="clamped-vs-free-boundary-conditions">Clamped vs Free boundary conditions</h3>
+<p>By default, a clamped boundary condition is used for the membrane. This means that the displacement of the membrane at the boundary is fixed and a phase inversion is applied to the reflected wave. I added the ability to switch between clamped and free boundary conditions to see how it would affect the sound of the membrane.</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Clamped boundary condition </p><figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_clamped.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure><p></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Free boundary condition </p><figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_free.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure><p></p>
+</div>
+</div>
+</div>
+<p>It is also possible to ‘clamp’ the center of the membrane. The center junction is removed and rimguides are added to the center of the membrane. This was partly inspired by how cymbals are usually mounted in the center while the edge of the cymbal is free to vibrate.</p>
+<figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_clamped_center.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure>
+</section>
+<section id="square-law-nonlinearity" class="level3">
+<h3 class="anchored" data-anchor-id="square-law-nonlinearity">Square law nonlinearity</h3>
+<p>Also implemented is a simple square law nonlinearity, as presented by Pierce and Van Duyne <span class="citation" data-cites="pierce_passive_1997"><a href="#ref-pierce_passive_1997" role="doc-biblioref"><strong>pierce_passive_1997?</strong></a></span>.</p>
+<div id="fig-squarelaw" class="quarto-float quarto-figure quarto-figure-left anchored" data-fig-align="left">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-squarelaw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/square_law.png" class="img-fluid quarto-figure quarto-figure-left figure-img" width="400">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-squarelaw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Delay loop string model with square law nonlinearity
+</figcaption>
+</figure>
+</div>
+<p>The nonlinearity was added to the rimguides. Apart from severely damping the sound, I was not able to get any interesting sound out of this system.</p>
+</section>
+<section id="passive-nonlinear-allpass-filter" class="level3">
+<h3 class="anchored" data-anchor-id="passive-nonlinear-allpass-filter">Passive Nonlinear Allpass Filter</h3>
+<p>Also from Pierce and Van Duyne, the passive nonlinear allpass filter is a filter where the coefficient alternate between two values, depending on the sign of the internal state of the filter <span class="citation" data-cites="pierce_passive_1997"><a href="#ref-pierce_passive_1997" role="doc-biblioref"><strong>pierce_passive_1997?</strong></a></span>. The idea is to model a string terminated by a string which coefficient changes depending on if the spring is compressed or extended.</p>
+<div id="fig-passive_filter" class="quarto-float quarto-figure quarto-figure-left anchored" data-fig-align="left">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-passive_filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/2dmesh/passive_nonlinear_filter.png" class="img-fluid quarto-figure quarto-figure-left figure-img" width="400">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-passive_filter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: String terminated with passive nonlinear double spring
+</figcaption>
+</figure>
+</div>
+<p>While it is difficult to tune correctly, it is possible to get some interesting sounds out of this system.</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Base sound </p><figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_linear.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure><p></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>With passive nonlinear filter </p><figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_nonlinear.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="additional-diffusion-filters" class="level3">
+<h3 class="anchored" data-anchor-id="additional-diffusion-filters">Additional diffusion filters</h3>
+<p>Finally, each rimguides can support an abitrary amount of diffusion filters. The filters are implemented as a series of cascaded allpass filters.</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Base sound </p><figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_wo_allpass.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure><p></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>With 4 additional diffusion filters </p><figure class="figure"><audio controls="" src="../assets/2dmesh/mesh_extra_diffusion.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure><p></p>
+</div>
+</div>
+</div>
+<p>Here’s a block diagram of the rimguide with optional diffusion filters:</p>
+<p><img src="../assets/2dmesh/rimguide_block_diagram.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="d-mesh-sandbox" class="level2">
+<h2 class="anchored" data-anchor-id="d-mesh-sandbox">2D Mesh Sandbox</h2>
+<p>2D Mesh Sandbox is a C++ application that allows you to experiment with the physical model of a circular membrane using 2D digital waveguides. The application uses <a href="https://github.com/ocornut/imgui">Dear ImGui</a> and <a href="https://github.com/epezent/implot">ImPlot</a> for the user interface, <a href="https://github.com/thestk/rtaudio">RtAudio</a> for audio output and <a href="https://github.com/libsndfile/libsndfile">libsndfile</a> for audio file output and input. The source code is available on <a href="https://github.com/Segfault1602/2DMeshSandbox">GitHub</a></p>
+<p><img src="../assets/2dmesh/sandbox_app.png" class="img-fluid" width="800"></p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<section id="config" class="level3 quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<h3 class="anchored" data-anchor-id="config">Config</h3>
+<p><img src="../assets/2dmesh/mesh_config.png" class="img-fluid"></p>
+</section>
+<section id="experimental-config" class="level3 quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<h3 class="anchored" data-anchor-id="experimental-config">Experimental config</h3>
+<p><img src="../assets/2dmesh/experimental_config.png" class="img-fluid"></p>
+</section>
+</div>
+</div>
+<section id="mesh-viewer" class="level3">
+<h3 class="anchored" data-anchor-id="mesh-viewer">Mesh viewer</h3>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Triangular mesh <img src="../assets/2dmesh/mesh_shape.png" class="img-fluid"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Rectilinear mesh <img src="../assets/2dmesh/mesh_shape_rect.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<section id="spectrum-viewer" class="level3 quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<h3 class="anchored" data-anchor-id="spectrum-viewer">Spectrum viewer</h3>
+<p><img src="../assets/2dmesh/spectrum.png" class="img-fluid"></p>
+</section>
+<section id="spectrogram-viewer" class="level3 quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<h3 class="anchored" data-anchor-id="spectrogram-viewer">Spectrogram viewer</h3>
+<p><img src="../assets/2dmesh/spectrogram.png" class="img-fluid"></p>
+</section>
+</div>
+<div class="quarto-layout-row">
+<section id="derived-parameters" class="level3 quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<h3 class="anchored" data-anchor-id="derived-parameters">Derived Parameters</h3>
+<p><img src="../assets/2dmesh/derived_parameters.png" class="img-fluid"></p>
+</section>
+</div>
+</div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/XLE6LftctZg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

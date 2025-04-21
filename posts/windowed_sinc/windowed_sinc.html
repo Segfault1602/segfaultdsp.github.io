@@ -223,6 +223,12 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
  <span class="menu-text">2D Mesh Sandbox</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/reverb_fdn/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automatic Optimization of Feedback Delay Networks</span></a>
+  </div>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
@@ -303,7 +309,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 
 <p>While there is a lot of theoretical explanation of the sinc resampling algorithm on the internet, there is unfortunately not a lot of simple practical examples as the implementation are usually heavily optimized and designed to support real-time scenario. This article will try to provide a simple implementation of the algorithm based on the CCRMA description <a href="https://ccrma.stanford.edu/~jos/resample/Implementation.html">article</a>. You can find a plain Python script containing the code used in this article <a href="https://github.com/Segfault1602/libdsp/blob/main/scripts/sinc_interpolate_ccrma.py">here</a>.</p>
 <p>First, let’s get our python imports out of the way.</p>
-<div id="66fc2ef2" class="cell" data-execution_count="1">
+<div id="3b20a93c" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -315,7 +321,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 </details>
 </div>
 <p>Let’s define a function that will build our sinc table for us. The sinc table will only contain the “right wing” of the symmetric FIR filter. This function will also return a table of differences between successive FIR samples which will be useful to speed up our linear interpolation later on.</p>
-<div id="02c7953f" class="cell" data-execution_count="2">
+<div id="0416fd55" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_sinc_table(num_zeros, samples_per_crossing):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    SINC_SIZE_ <span class="op">=</span> num_zeros <span class="op">*</span> samples_per_crossing</span>
@@ -336,7 +342,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> h, h_diff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And here’s what our table looks like:</p>
-<div id="2a68ee1b" class="cell" data-execution_count="3">
+<div id="8472df67" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>h, h_diff <span class="op">=</span> build_sinc_table(num_zeros<span class="op">=</span><span class="dv">13</span>, samples_per_crossing<span class="op">=</span><span class="dv">512</span>)</span>
@@ -353,7 +359,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 </div>
 </div>
 <p>We can now implement the main algorithm as described <a href="https://ccrma.stanford.edu/~jos/resample/Implementation.html">here</a>.</p>
-<div id="929f3a72" class="cell" data-execution_count="4">
+<div id="c0dfe0a7" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sinc_resample(x, ratio, h, h_diff, samples_per_crossing):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    time_step <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> ratio</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    filter_scale <span class="op">=</span> <span class="bu">min</span>(<span class="dv">1</span>, ratio)</span>
@@ -404,7 +410,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 <span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here’s an example of the implementation at work where we will upsample a simple sine wave. The blue dotted line on the graph effectively shows what we would have obtained using a linear interpolation method instead.</p>
-<div id="79d1ca09" class="cell" data-execution_count="5">
+<div id="42765187" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of zeros crossing</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>NZ <span class="op">=</span> <span class="dv">13</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -438,7 +444,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 </div>
 </div>
 <p>We are now ready to perform our benchmark test. Inspired by the <a href="https://src.infinitewave.ca/">Infinite Wave</a> methodology, we will try to downsample a quadratic chirp signal from 96kHz to 44.1kHz.</p>
-<div id="f095641a" class="cell" data-execution_count="6">
+<div id="1923bc84" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ORIGINAL_FS <span class="op">=</span> <span class="dv">96000</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>CHIRP_LENGTH_SECONDS <span class="op">=</span> <span class="dv">8</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>END_CHIRP_FREQUENCY <span class="op">=</span> <span class="dv">44000</span></span>
@@ -447,7 +453,7 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>in_chirp <span class="op">=</span> signal.chirp(time, <span class="dv">0</span>, CHIRP_LENGTH_SECONDS, END_CHIRP_FREQUENCY, <span class="st">'quadratic'</span>) <span class="op">*</span> <span class="fl">0.6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We will now resample that signal in 3 different ways. First, we’ll use our <code>sinc_resample</code> method with a sinc table containing 13 zero crossings and then again with a table containing 32 zero crossings. This should allow us to see how the number of zero crossing in our table affects the lowpass filtering of our implementation. Lastly, we will use numpy to resample the signal using linear interpolation so that we can compare our algorithm against a fast common resampling method.</p>
-<div id="b8b61d6f" class="cell" data-execution_count="7">
+<div id="af6d359d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TARGET_FS <span class="op">=</span> <span class="dv">44100</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>RESAMPLING_RATIO <span class="op">=</span> TARGET_FS <span class="op">/</span> ORIGINAL_FS</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -497,56 +503,60 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 <span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>plot_spectrogram(<span class="ss">f"Resampled to </span><span class="sc">{</span>TARGET_FS<span class="sc">}</span><span class="ss"> Hz (numpy.interp)"</span>, out_linear, TARGET_FS, ax3)</span>
 <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>fig.tight_layout(pad<span class="op">=</span><span class="fl">1.0</span>)</span>
 <span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/opt/miniconda3/lib/python3.12/site-packages/matplotlib/axes/_axes.py:8091: RuntimeWarning: divide by zero encountered in log10
+  Z = 20. * np.log10(spec)</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="windowed_sinc_files/figure-html/cell-8-output-1.png" width="698" height="473" class="figure-img"></p>
+<p><img src="windowed_sinc_files/figure-html/cell-8-output-2.png" width="698" height="473" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>First, we can immediately notice that the resampled output lost all content above the Nyquist frequency. This explains why half the spectrogram is empty. The downward line(s) around the 6-second mark is the higher frequency content present in the original file that is now folding around Nyquist. This is called aliasing. We can also see how the resampling done with 32 zeros shows slightly less aliasing than the 13 zeros resampling.</p>
 <p>Finally, we can look at the impulse and frequency response of our resampler:</p>
-<div id="5b23bfa9" class="cell" data-execution_count="8">
+<div id="4363f184" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ORIGINAL_FS <span class="op">=</span> <span class="dv">96000</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>TARGET_FS <span class="op">=</span> <span class="dv">44100</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>RESAMPLING_RATIO <span class="op">=</span> TARGET_FS <span class="op">/</span> ORIGINAL_FS</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>IMPULSE_LENGTH <span class="op">=</span> <span class="dv">128</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>impulse <span class="op">=</span> np.zeros(IMPULSE_LENGTH)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>impulse[<span class="bu">round</span>(IMPULSE_LENGTH<span class="op">/</span><span class="dv">2</span>)] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>nz_1 <span class="op">=</span> <span class="dv">13</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>SAMPLES_PER_CROSSING <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>h, h_diff <span class="op">=</span> build_sinc_table(nz_1, SAMPLES_PER_CROSSING)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>out_imp_1 <span class="op">=</span> sinc_resample(</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    impulse,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    RESAMPLING_RATIO,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    h,</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    h_diff,</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    SAMPLES_PER_CROSSING)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>nz_2 <span class="op">=</span> <span class="dv">32</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>SAMPLES_PER_CROSSING <span class="op">=</span> <span class="dv">512</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>h, h_diff <span class="op">=</span> build_sinc_table(nz_2, SAMPLES_PER_CROSSING)</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>out_imp_2 <span class="op">=</span> sinc_resample(</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    impulse,</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    RESAMPLING_RATIO,</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    h,</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    h_diff,</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    SAMPLES_PER_CROSSING)</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(<span class="dv">2</span>)</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>fig.set_figwidth(<span class="dv">10</span>)</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">211</span>)</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>plt.plot(out_imp_1)</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">212</span>)</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>plt.plot(out_imp_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ORIGINAL_FS <span class="op">=</span> <span class="dv">96000</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>TARGET_FS <span class="op">=</span> <span class="dv">44100</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>RESAMPLING_RATIO <span class="op">=</span> TARGET_FS <span class="op">/</span> ORIGINAL_FS</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>IMPULSE_LENGTH <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>impulse <span class="op">=</span> np.zeros(IMPULSE_LENGTH)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>impulse[<span class="bu">round</span>(IMPULSE_LENGTH<span class="op">/</span><span class="dv">2</span>)] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>nz_1 <span class="op">=</span> <span class="dv">13</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>SAMPLES_PER_CROSSING <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>h, h_diff <span class="op">=</span> build_sinc_table(nz_1, SAMPLES_PER_CROSSING)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>out_imp_1 <span class="op">=</span> sinc_resample(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    impulse,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    RESAMPLING_RATIO,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    h,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    h_diff,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    SAMPLES_PER_CROSSING)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>nz_2 <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>SAMPLES_PER_CROSSING <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>h, h_diff <span class="op">=</span> build_sinc_table(nz_2, SAMPLES_PER_CROSSING)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>out_imp_2 <span class="op">=</span> sinc_resample(</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    impulse,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    RESAMPLING_RATIO,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    h,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    h_diff,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    SAMPLES_PER_CROSSING)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(<span class="dv">2</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>fig.set_figwidth(<span class="dv">10</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">211</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>plt.plot(out_imp_1)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">212</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>plt.plot(out_imp_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -556,27 +566,27 @@ gtag('config', 'G-210NT6BWYX', { 'anonymize_ip': true});
 </div>
 </div>
 </div>
-<div id="f7b6e899" class="cell" data-execution_count="9">
+<div id="4b865ce9" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> fft</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>NFFT <span class="op">=</span> <span class="dv">1024</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>impulse_fft <span class="op">=</span> fft.fft(out_imp_1, NFFT)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>impulse_fft <span class="op">=</span> fft.fftshift(impulse_fft)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>fft_db <span class="op">=</span> <span class="dv">20</span> <span class="op">*</span> np.log10(np.<span class="bu">abs</span>(impulse_fft))</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>xf <span class="op">=</span> fft.fftfreq(NFFT, <span class="dv">1</span><span class="op">/</span>TARGET_FS)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>xf <span class="op">=</span> fft.fftshift(xf)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.figure(<span class="dv">3</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.plot(xf, fft_db)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">0</span>, TARGET_FS)</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Ideal filter</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ideal_x <span class="op">=</span> np.zeros(<span class="dv">22000</span>)</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>ideal_x[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">10</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>plt.plot(ideal_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> fft</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>NFFT <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>impulse_fft <span class="op">=</span> fft.fft(out_imp_1, NFFT)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>impulse_fft <span class="op">=</span> fft.fftshift(impulse_fft)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>fft_db <span class="op">=</span> <span class="dv">20</span> <span class="op">*</span> np.log10(np.<span class="bu">abs</span>(impulse_fft))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>xf <span class="op">=</span> fft.fftfreq(NFFT, <span class="dv">1</span><span class="op">/</span>TARGET_FS)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>xf <span class="op">=</span> fft.fftshift(xf)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.figure(<span class="dv">3</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.plot(xf, fft_db)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">0</span>, TARGET_FS)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Ideal filter</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>ideal_x <span class="op">=</span> np.zeros(<span class="dv">22000</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>ideal_x[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">10</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.plot(ideal_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>

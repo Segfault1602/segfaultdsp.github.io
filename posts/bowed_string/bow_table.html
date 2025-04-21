@@ -252,6 +252,12 @@ window.Quarto = {
  <span class="menu-text">2D Mesh Sandbox</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/reverb_fdn/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Automatic Optimization of Feedback Delay Networks</span></a>
+  </div>
+</li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
@@ -334,7 +340,7 @@ window.Quarto = {
 <p>Let’s take a look at the bow table as defined in the <a href="https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/include/BowTable.h#L84">stk</a>:</p>
 <p><span class="math display">\[ BowTable(v_\Delta^+) = \min \left \{(|v_\Delta^+|*Slope + 0.75)^{-4}, 1 \right \} \]</span></p>
 <p>Where <span class="math inline">\(v_\Delta^+\)</span> is the velocity of the bow minus the velocity of the string going into the bow and <span class="math inline">\(Slope\)</span> is the parameter that controls the shape of the table and is related to the bow force. While the equation may seem daunting at first, we can easily plot it and immediately recognize a shape similar to the linear bow table as presented by figure <a href="https://ccrma.stanford.edu/~jos/pasp/Bow_String_Scattering_Junction.html">9.54</a> in Physical Audio Signal Processing by Julius O. Smith.</p>
-<div id="788bc477" class="cell" data-execution_count="1">
+<div id="38fd2bd8" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -355,7 +361,7 @@ window.Quarto = {
 <div class="cell-output cell-output-stderr">
 <pre><code>&lt;&gt;:12: SyntaxWarning: invalid escape sequence '\D'
 &lt;&gt;:12: SyntaxWarning: invalid escape sequence '\D'
-/var/folders/cc/n9ncrjvd4wz80h41vvwnpyl80000gn/T/ipykernel_64360/2598389576.py:12: SyntaxWarning: invalid escape sequence '\D'
+/var/folders/cc/n9ncrjvd4wz80h41vvwnpyl80000gn/T/ipykernel_94326/2598389576.py:12: SyntaxWarning: invalid escape sequence '\D'
   plt.xlabel('$v_\Delta^+$')</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -367,7 +373,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We can now observe how varying the force transforms the bow table.</p>
-<div id="45679fab" class="cell" data-execution_count="2">
+<div id="ec4c61a0" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>v_delta <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
@@ -394,7 +400,7 @@ window.Quarto = {
 <p><a href="https://github.com/thestk/stk/blob/d0345712db51a01d8d6ca44980c56798a54b0fc3/src/Bowed.cpp#L155">bowed.cpp</a></p>
 <pre class="{c++}"><code>    bowTable_.setSlope( 5.0 - (4.0 * normalizedValue) );</code></pre>
 <p>Where <code>normalizedValue</code> is a value between 0 and 1 representing the bow pressure. This effectively restricts the slope value between 1 and 5. In other words, as the bow pressure increases, the ‘sticking’ zone of the bow table gets larger. We can plot the bow table equation again, but this time with varying force values between 0 and 10 to understand why.</p>
-<div id="a29c43b1" class="cell" data-execution_count="3">
+<div id="85f44537" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>v_delta <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
