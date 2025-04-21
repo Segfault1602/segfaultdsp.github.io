@@ -1,0 +1,159 @@
+---
+title: "Membrain: Extending the drumhead"
+jupyter: python3
+bibliography: references.bib
+csl: ieee.csl
+format: html
+fig-cap-location: bottom
+lightbox: true
+date: 01-09-2025
+date-modified: last-modified
+filters:
+  - highlight-text
+keywords:
+  - Digital Musical Instruments
+  - drumhead
+  - sensors
+  - capacitive touch
+  - piezo
+  - time of flight
+  - linear Hall-effect
+license: "CC BY"
+author:
+  - name: Alexandre St-Onge
+    url: https://segfaultdsp.com
+    affiliation:
+      - name: McGill University
+        department: Music Technology
+        city: Montreal
+        state: Quebec
+        url: https://www.mcgill.ca/
+abstract: |
+    This paper introduces the Membrain, a prototyping platform allowing the exploration of various sensors in the context of a drumhead or flexible membrane. Most digital musical instruments (DMI) that are created at IDMIL make use of isometric sensors like FSRs, or piezoelectric sensors on hard surfaces. The Membrain aims to provide a platform for instrument designers in the lab to explore the use of flexible membranes and how they can be incorporated into future DMIs. The paper will present the design of the prototype, the sensors used, the user interface, and the mappings used to test the prototype.
+citation:
+  url: https://segfaultdsp.com/posts/Membrain/
+---
+
+# Membrain: Extending the drumhead
+
+## Background
+
+Despite their popularity and the number of different offerings on the market, percussive digital devices often relies on the same sensors and technologies[-@tindale_comparison_2005]. Tindale et al. presented a comparison of different sensors used in digital percussion instruments and found that most of them rely mostly on sensors that only measure velocity at the moment of impact. While the paper presents a good overview of the different sensors available, it mostly focuses on sensors that can provide information on the strike itself, ex.: velocity, position, angle of incidence, etc. I am interested in exploring sensors that can provide information on the state of the drumhead itself. For example, the jazz drummer [Ari Hoenig](https://www.youtube.com/watch?v=WfwlW_a99Jw) often plays melodies on his drums by using his elbow or hand to press on the drumhead in order to change the pitch of the drum.
+
+The tabla is another example of a percussion instrument where interaction with the drumhead is important. By pressing on the drumhead, the player can change the pitch of the drum. Pardue et al. presented a paper on the design of a digital tabla[-@pardue_demystifying_2020]. Their design is based on optical reflectance sensors placed underneath the membrane allowing them to detect and localize strikes as well as damping[-@pardue_demystifying_2020].
+
+The optical reflectance sensors used in the digital tabla were based on previous work by Sokolovskis and McPherson[-@sokolovskis_optical_2014]. In their design, six QRE1113 sensors were placed underneath a drumhead, providing a noninvasive way to detect strikes and other interactions with the drumhead.
+
+## Design
+
+::: {.column-margin}
+![The Membrain prototype.](../assets/membrain/membrain.jpeg)
+:::
+
+The Membrain prototype was built using a [Sabian Quiet Tone practice pad](https://sabian.com/product/qt-sd14cl-14-quiet-tone-snare-drum-practice-pad-classic-version/) as the base. The practice pad was chosen due to its size and the fact that it allows the use of a real drumhead. The drumhead chosen was a mesh drumhead, which on top of being silent, allowed me to easily sow conductive thread through it to use as capacitive sensors. Furthermore, the frame of the practice pad allowed me to attach various sensors underneath the drumhead easily.
+
+### Sensors
+
+Several sensors were used in the prototype:
+
+::: {.column-margin}
+![A piezoelectric sensor attached to the drumhead.](../assets/membrain/piezo.jpeg)
+:::
+
+#### Piezo
+
+A simple piezoelectric sensor was attached to the top of the drumhead to detect impact on the drumhead. A piece of double-sided foam tape was used to fix the piezo to the drumhead as well as to provide a small amount of physical low-pass filtering to the signal going to the piezo.
+
+#### Capacitive sensors
+
+Capacitive touch sensors were used as buttons to trigger various events. The capacitive sensors were made of [conductive thread](https://www.adafruit.com/product/603) sown through the drumhead and connected directly to a general-purpose input/ouput (GPIO) pin on the microcontroller. Four such sensors were used in the prototype. Three of them were placed in a line near the rim of the drumhead in such a way as to allow easy finger drumming using the index, middle, and ring fingers of my right hand. The fourth sensor was placed on the opposite side of the drumhead and was meant to be used as a modifier key for the system.
+
+::: {.column-margin}
+![Capacitive sensor made of conductive thread.](../assets/membrain/capacitive.jpeg)
+:::
+
+
+#### Infrared Time of Flight sensor
+
+A time of flight sensor from ST Microelectronics and [Adafruit](https://www.adafruit.com/product/3316) was used as a way to detect the flexion of the drumhead. The sensor was placed underneath the drumhead on one of the transversal bars of the practice pad frame. A piece of black tape was placed on the drumhead above the sensor to as the translucent nature of the mesh drumhead made it difficult to get a [good reading]{bg-colour="#ffe433"} from the sensor. The sensor was connected to the microcontroller using the I2C protocol.
+
+:::{.callout-warning}
+- Define 'good reading'
+:::
+
+#### Linear Hall-effect sensor
+
+Three [linear Hall-effect sensors](https://www.allegromicro.com/-/media/files/datasheets/als31001-datasheet.pdf) were also used as a way to detect the flexion of the drumhead. The sensors were placed underneath the drumhead using custom 3D-printed mounts. Several configurations were tested, but the most successful one was to place the sensors side by side with roughly 15mm separating each sensor. Each sensor had a small magnet attached to the drumhead directly above. The sensors were connected to the microcontroller built-in ADC.
+
+:::{.callout-warning}
+- Add specs for ADC
+:::
+
+
+#### User Interface
+
+An [LED stick](https://www.adafruit.com/product/1426) of eigth WS2812B LEDs was used as a visual feedback for the system. The device shows up as a MIDI device when connected to a computer through USB.
+
+::: {.column-margin}
+![Raspberry Pi Pico 2 and LED stick.](../assets/membrain/ledstick.jpeg)
+:::
+
+## Implementation
+
+A [Raspberry Pi Pico 2](https://www.raspberrypi.com/products/raspberry-pi-pico-2/) was used as the microcontroller for the prototype. The Pico 2 was chosen due to its small size, low cost, and number of GPIO pins available. The firmware was written in C++ and used [FreeRTOS](https://www.freertos.org/) and [TinyUSB](https://docs.tinyusb.org/en/latest/) as the RTOS and USB stack respectively. The source code for the firmware is available on [GitHub](https://github.com/Segfault1602/Membrain).
+
+## Mappings
+
+![The VCV Rack software.](../assets/membrain/vcv_rack.png){style="float:right; width: 50%;" .lightbox}
+
+To test the sensors with various mapping strategies, the software VCV Rack\footnote{\url{https://vcvrack.com/}} was used. Initially, Ableton Live was used, but I found it difficult to quickly test various mappings as it does not easily allow arbitrary MIDI mappings. In VCV Rack, every MIDI message is translated to a control voltage signal which can be easily routed and manipulated. Since the software is also performance-oriented, it was easy to test various mappings in real time while also being able to create compelling sounds.
+
+## Results
+
+![The Membrain prototype.](../assets/membrain/membrain2.jpeg){style="float:right; width: 50%;" .lightbox}
+<!-- \begin{figure}
+  \centering
+  \includegraphics[angle=-90, width=1\columnwidth]{membrain2.jpeg}
+  \caption{The Membrain prototype.}\label{fig:membrain_side}
+\end{figure} -->
+
+The first sensor to be tested was the capacitive touch sensor. I had my doubts at first due to the apparent simplicity of the sensors, but they turned out to be surprisingly responsive. A common problem I encounter with FSRs is that it can be difficult to play fast notes as their software [implementation]{bg-colour="#ffe433"} often requires that your finger be completely off the sensor before it can be triggered again, which can be difficult to achieve doing rapid strokes with your hands or fingers.
+
+:::{.callout-warning}
+- Whose implementation?
+:::
+
+ In theory, the capacitive sensors will suffer from the same problem, but since they are so cheap and easy to implement, it becomes trivial to add more sensors such that each finger can have its own touchpad. By using conductive thread, it is also possible to create sensors of arbitrary shapes and sizes and, with the mesh drumhead, could be placed anywhere on the drumhead. As long as care is taken to avoid short circuits, there is no cross-talk between the sensors.
+
+The biggest downside of the capacitive sensors is that they act strictly as an on/off switch. Even with other modulation sources, the lack of velocity information can make the instrument feel less expressive.
+
+The piezo sensor was also surprisingly easy to integrate. From experience with commercial drum triggers which also use piezo sensors, I was expecting it would require quite a bit of work to get a good response from the sensor. Commercial drum triggers are usually attached to the rim of the drum and use a layer of foam between the drumhead and the sensor. Sensitivity and debouncing parameters often need to be adjusted in order to get a good response from the trigger. Simply using a piece of double-sided foam tape was enough for me to get an [acceptable response]{bg-colour="#ffe433"} from the sensor. The piezo I chose also came with a simple trigger detection circuit which made it easy to connect to the microcontroller.
+
+:::{.callout-warning}
+- Define 'acceptable response'
+:::
+
+
+The time of flight sensor was the most difficult to integrate, mostly due to the fact that the module would often fail initialization or would sometime get stuck in a state where it would always return the same value. The resolution of 1mm was also not enough to detect small flexions of the drumhead which limited the amount of parameters it could be mapped to. For example, trying to control the pitch of an oscillator with the sensor was not very satisfying as the pitch sounded very quantized. This was also due to the fact that the membrane would only be flexed over a distance of approximately 1cm, which meant that the sensor would only be able to detect 10 different states. A big advantage of this type of sensor is that it is non-invasive and does not need to be placed close to the drumhead to work. This can be useful in a context where space close to the drumhead is limited.
+
+The linear Hall-effect sensors were the most successful in the prototype. The sensors were surprisingly easy to integrate and provided a [decent resolution]{bg-colour="#ffe433"} that made them useful for controlling continuous parameters. I was able to use 3 sensors placed side by side to detect the flexion of the drumhead in a way that felt very natural. It is important to understand that the tension of the drumhead is not uniform, for example, it is much harder to flex the drumhead near the rim than near the center. This can be an important piece of tactile feedback when interacting with the drumhead. I was able to place the sensors in such a way that sliding my hand from the center to the rim would raise the pitch of the sound.
+
+:::{.callout-warning}
+- Define 'decent resolution'
+:::
+
+The obvious downside of the linear Hall-effect sensors is that they are invasive as they require some kind of magnetic material to be attached to the drumhead. This can be a problem if keeping the natural sound of the membrane is important. The type of magnet used is also important, as the strength of the magnetic field will dictate how far the sensor can be placed from the magnet. In my case, I found that I needed to place the magnet very close to the sensor (approximately 1cm) to get a good reading.
+
+## Future Work
+Given that one of the goals of this project is to provide a prototyping platform for other IDMIL members, the next step would be to add OSC support to the firmware. This would allow the Membrain to take advantage of [libMapper](https://libmapper.github.io/) which is a powerful tool for building flexible mapping.
+
+Another interesting avenue of exploration would be to use more than one piezo sensor. Paradiso et al. were able to detect the location and type of impact on a surface using 4 piezo sensors located at the corners of a surface[-@paradiso_passive_2002]. A smaller piezo sensor could also be placed directly on the rim of the drumhead to detect rim shots. Finally, finding a way to include velocity information in the capacitive sensors would be a big improvement. One possible way to achieve this could be to use a piezo sensor directly underneath the capacitive sensor and use the fusion of the two signals to determine the velocity and location of the strike. Embedding a layer of velostat material into the drumhead could also be an interesting thing to try.
+
+## Conclusions
+
+In this paper, I presented the Membrain, a prototyping platform for exploring the use of flexible membranes in digital musical instruments. Built on top of a practice pad, the Membrain allows the exploration of various sensors such as piezo, capacitive touch, time of flight, and linear Hall-effect sensors. The form factor of the device makes it easy to add sensors or simply change their placement on the membrane. The prototype was tested with various mappings in VCV Rack and showed promising results.
+
+## References
+
+::: {#refs}
+:::
