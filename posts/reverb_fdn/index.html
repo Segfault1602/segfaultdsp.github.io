@@ -811,7 +811,42 @@ Figure&nbsp;9
 <section id="conclusion" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Conclusion</h1>
 <p>In this work, we looked into the automatic optimization of feedback delay networks using a genetic algorithm. A real-time FDN implementation was developed in C++ and used within a Python environment to take advantage of the existing optimization libraries. A reimplementation of the methodologies described in <span class="citation" data-cites="ibnyahya_method_2022"><a href="#ref-ibnyahya_method_2022" role="doc-biblioref">[9]</a></span> and <span class="citation" data-cites="santo_differentiable_2023 santo_rir2fdn_2024"><a href="#ref-santo_differentiable_2023" role="doc-biblioref">[16]</a>, <a href="#ref-santo_rir2fdn_2024" role="doc-biblioref">[17]</a></span> was performed using this new FDN implementation to demonstrate that similar results could be achieved. A potential next step would be to integrate the real-time FDN implementation as a layer of a deep neural network to allow for end-to-end training of the FDN parameters, similar to what was done in <span class="citation" data-cites="ramirez_differentiable_2021"><a href="#ref-ramirez_differentiable_2021" role="doc-biblioref">[24]</a></span>.</p>
-<section id="references" class="level2" data-number="6.1">
+</section>
+<section id="apendix" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Apendix</h1>
+<section id="spectrograms-of-synthesized-impulse-responses" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="spectrograms-of-synthesized-impulse-responses"><span class="header-section-number">7.1</span> Spectrograms of synthesized impulse responses</h2>
+<p>Impulse responses and spectrograms of the target RIR, the synthesized RIR using GA and the synthesized RIR using RIR2FDN. The yellow line indicates the echo density profile as proposed by <span class="citation" data-cites="abel_simple_2006"><a href="#ref-abel_simple_2006" role="doc-biblioref">[25]</a></span>. The red line indicates the time at which the echo density profile reaches a value of 1.</p>
+<div id="fig-rir-comparison" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rir-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="../assets/reverb_fdn/rir_comparison_h001_Bedroom.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;10: "><img src="../assets/reverb_fdn/rir_comparison_h001_Bedroom.png" class="img-fluid figure-img"></a></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="../assets/reverb_fdn/rir_comparison_h025_Diningroom.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;10: "><img src="../assets/reverb_fdn/rir_comparison_h025_Diningroom.png" class="img-fluid figure-img"></a></p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rir-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: <a href="../assets/reverb_fdn/rir_comparison_h042_Hallway.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figure&nbsp;10: "><img src="../assets/reverb_fdn/rir_comparison_h042_Hallway.png" class="img-fluid figure-img" style="width:50.0%"></a>
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="fdn-performance" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="fdn-performance"><span class="header-section-number">7.2</span> FDN performance</h2>
+<p>Benchmarks of various FDN configurations. The only difference between the configurations is the number of cascaded biquads used in the attenuation and tone correction filters. A Householder matrix was used as the feedback matrix.</p>
+<ul>
+<li>Blue: 11 cascaded biquads (i.e.&nbsp;octave band filters)</li>
+<li>Orange: 32 cascaded biquads (i.e.&nbsp;1/3-octave band filters)</li>
+<li>Green: 1 biquad</li>
+</ul>
+<p>The benchmarks were performed on a 2024 MacBook Air M3 using the microbenchmarking library <a href="https://nanobench.ankerl.com/">nanobench</a> and measured the time taken to render 1 second of audio at 48kHz.</p>
+<p><a href="../assets/reverb_fdn/fdn_perf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="../assets/reverb_fdn/fdn_perf.png" class="img-fluid" style="width:80.0%"></a></p>
+</section>
+<section id="references" class="level2" data-number="7.3">
 
 
 
@@ -819,7 +854,7 @@ Figure&nbsp;9
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">6.1 References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">7.3 References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
 <div id="ref-valimaki_fifty_2012" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">V. Valimaki, J. D. Parker, L. Savioja, J. O. Smith, and J. S. Abel, <span>“Fifty years of artificial reverberation,”</span> <em><span>IEEE</span> Transactions on Audio, Speech, and Language Processing</em>, vol. 20, no. 5, pp. 1421–1448, Jul. 2012, doi: <a href="https://doi.org/10.1109/TASL.2012.2189567">10.1109/TASL.2012.2189567</a>.</div>
 </div>
@@ -891,6 +926,9 @@ Figure&nbsp;9
 </div>
 <div id="ref-ramirez_differentiable_2021" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[24] </div><div class="csl-right-inline">M. A. M. Ramírez, O. Wang, P. Smaragdis, and N. J. Bryan, <span>“Differentiable signal processing with black-box audio effects.”</span> <span>arXiv</span>, May 11, 2021. doi: <a href="https://doi.org/10.48550/arXiv.2105.04752">10.48550/arXiv.2105.04752</a>.</div>
+</div>
+<div id="ref-abel_simple_2006" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[25] </div><div class="csl-right-inline">J. S. Abel and P. Huang, <span>“A simple, robust measure of reverberation echo density,”</span> <em>Audio Eng. Soc. Conv.</em>, 2006.</div>
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

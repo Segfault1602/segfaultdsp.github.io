@@ -167,6 +167,28 @@
     ]
   },
   {
+    "objectID": "posts/reverb_fdn/index.html#spectrograms-of-synthesized-impulse-responses",
+    "href": "posts/reverb_fdn/index.html#spectrograms-of-synthesized-impulse-responses",
+    "title": "Automatic Optimization of Feedback Delay Networks",
+    "section": "7.1 Spectrograms of synthesized impulse responses",
+    "text": "7.1 Spectrograms of synthesized impulse responses\nImpulse responses and spectrograms of the target RIR, the synthesized RIR using GA and the synthesized RIR using RIR2FDN. The yellow line indicates the echo density profile as proposed by [25]. The red line indicates the time at which the echo density profile reaches a value of 1.\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 10:",
+    "crumbs": [
+      "Posts",
+      "Automatic Optimization of Feedback Delay Networks"
+    ]
+  },
+  {
+    "objectID": "posts/reverb_fdn/index.html#fdn-performance",
+    "href": "posts/reverb_fdn/index.html#fdn-performance",
+    "title": "Automatic Optimization of Feedback Delay Networks",
+    "section": "7.2 FDN performance",
+    "text": "7.2 FDN performance\nBenchmarks of various FDN configurations. The only difference between the configurations is the number of cascaded biquads used in the attenuation and tone correction filters. A Householder matrix was used as the feedback matrix.\n\nBlue: 11 cascaded biquads (i.e. octave band filters)\nOrange: 32 cascaded biquads (i.e. 1/3-octave band filters)\nGreen: 1 biquad\n\nThe benchmarks were performed on a 2024 MacBook Air M3 using the microbenchmarking library nanobench and measured the time taken to render 1 second of audio at 48kHz.",
+    "crumbs": [
+      "Posts",
+      "Automatic Optimization of Feedback Delay Networks"
+    ]
+  },
+  {
     "objectID": "posts/bowed_string/bowed_string_example.html",
     "href": "posts/bowed_string/bowed_string_example.html",
     "title": "BowedString Part 3: BowedString audio example",
