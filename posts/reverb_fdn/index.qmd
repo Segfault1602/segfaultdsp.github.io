@@ -4,7 +4,7 @@ jupyter: python3
 bibliography: references.bib
 csl: ieee.csl
 format: html
-date: 04-01-2025
+date: 04-21-2025
 date-modified: last-modified
 author:
   - name: Alexandre St-Onge

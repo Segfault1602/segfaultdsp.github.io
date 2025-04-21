@@ -4,3 +4,7 @@
 
 .DS_STORE
 */.DS_STORE
+
+*.quarto_ipynb
+
+/.luarc.json
