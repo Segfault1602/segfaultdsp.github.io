@@ -28,7 +28,7 @@ Typical components of a $N$ channel FDN include the input gains **$B$**, output 
 ::: {#fig-fdn-structure}
 ![](../assets/reverb_fdn/fdn_structure_jot.png){ width=50%}
 
-Common FDN structure [@jot_analysissynthesis_1992]
+Common FDN structure [@jean-marc_digital_1991]
 :::
 
 The output of the FDN is given by the following equation, with $x(t)$ being the input signal and $q_i(t)$ the output of the $i^{th}$ delay line [@jot_analysissynthesis_1992]:
@@ -40,6 +40,15 @@ $$ {#eq-fdn-output}
 $$
 q_j(t+m_j) = \sum_{i=1}^{N} a_{ij} \cdot q_i(t) + b_j \cdot x(t) \qquad (\textrm{for}\ 1 \le j \le N),
 $$ {#eq-fdn-output2}
+
+Which becomes in the z-domain:
+
+$$
+y(z) = c^T \cdot q(z) + d \cdot x(z)
+$$ {#eq-fdn-output3}
+$$
+q(z) = D(z) \cdot [A q(z) + b x(z)],
+$$ {#eq-fdn-output4}
 
 where:
 
@@ -78,7 +87,7 @@ FFM structure from [@schlecht_scattering_2020]
 
 ### Attenuation Filters
 
-Adding attenuation filters inside the feedback loop allows for control of the frequency-dependant decay time of the FDN. Various strategies have been proposed in the literature the design the filters. One of the first proposed methods involved the use of a one-pole lowpass filter[@jean-marc_digital_1991] where the pole of the filter depends on the desired reverberation time ($T_{60}$) at $dc$ (0Hz) and the Nyquist frequency and further scaled by the delay length of the preceding delay line. More recently, the use of graphic equalizers (GEQ) has been increasingly popular as low-order filters are not accurate enough to model the decay characteristics of real rooms [@valimaki_two-stage_2024]. Välimäki et al. [@valimaki_two-stage_2024] proposed a two-stage approach to design the attenuation filter where a low-order low-shelf filter is used to approximate the target magnitude response at the $dc$ and Nyquist frequencies, followed by a higher-order GEQ that can be used to approximate the desired attenuation in multiple frequency bands. The use of the pre-filter eases the design of the GEQ which can become inaccurate if the gains variation between bands is greater than 12dB [@valimaki_two-stage_2024].
+Adding attenuation filters inside the feedback loop allows for control of the frequency-dependant decay time of the FDN. Various strategies have been proposed in the literature to design the filters. One of the first proposed methods involved the use of a one-pole lowpass filter[@jean-marc_digital_1991] where the pole of the filter depends on the desired reverberation time ($T_{60}$) at $dc$ (0Hz) and the Nyquist frequency and further scaled by the delay length of the preceding delay line. More recently, the use of graphic equalizers (GEQ) has been increasingly popular as low-order filters are not accurate enough to model the decay characteristics of real rooms [@valimaki_two-stage_2024]. Välimäki et al. [@valimaki_two-stage_2024] proposed a two-stage approach to design the attenuation filter where a low-order low-shelf filter is used to approximate the target magnitude response at the $dc$ and Nyquist frequencies, followed by a higher-order GEQ that can be used to approximate the desired attenuation in multiple frequency bands. The use of the pre-filter eases the design of the GEQ which can become inaccurate if the gain's variation between bands is greater than 12dB [@valimaki_two-stage_2024].
 
 ::: {#fig-two-stage-structure}
 ![](../assets/reverb_fdn/two_stage_struct.png){ width=50%}
@@ -111,7 +120,7 @@ $$
 The impulse response is first filtered through an octave band filter bank to obtain the energy decay curves at each frequency band. The EDCs are then scaled to a dB scale to obtain the reverberation time. Depending on the level of static noise present in the RIR, it might be more accurate to compute the $T_{60}$ using the T15 [@ibnyahya_method_2022]:
 
 $$
-T_{60} = 3 \cdot T_{15}
+T_{60} = 4 \cdot T_{15}
 $$
 
 ::: {#fig-edc layout-ncol="2"}
@@ -149,7 +158,7 @@ $$
 
 where $K$ is the number of Mel-frequency cepstral coefficients (MFCC), $N$ is the number of bins, and $M_{tar}$ and $M_{gen}$ are the target and generated impulse response MFCCs.
 
-In [@santo_differentiable_2023], Santos et al. proposed a differentiable FDN architecture that allows optimization of the parameters of the FDN. The main goal of the optimization process is to minimize the coloration of a lossless FDN. The frequency-sampling method is used to approximate the FDN as a finite-impulse-response (FIR) filter by evaluating the transfer function [@eq-fdn-transfer] at $M$ frequency. The input gains $b$, output gains $c$, and matrix coefficients $W$ are optimized while the delay lengths $m$ are fixed. To ensure that the matrix is unitary, the matrix coefficients $W$ are mapped using the equation:
+In [@santo_differentiable_2023], Santos et al. proposed a differentiable FDN architecture that allows optimization of the parameters of the FDN. The main goal of the optimization process is to minimize the coloration of a lossless FDN. The frequency-sampling method is used to approximate the FDN as a finite-impulse-response (FIR) filter by evaluating the transfer function [@eq-fdn-transfer] at $M$ frequencies. The input gains $b$, output gains $c$, and matrix coefficients $W$ are optimized while the delay lengths $m$ are fixed. To ensure that the matrix is unitary, the matrix coefficients $W$ are mapped using the equation:
 $$
 U = e^{W_{Tr} - W_{Tr}^\intercal},
 $$
@@ -169,9 +178,9 @@ In [@ibnyahya_method_2022], Ibnyahya and Reiss implemented their system in MATLA
 
 ## Results
 
-The MATLAB implementation of [@ibnyahya_method_2022] (MatchReverb) was available online and was used to generate the following RIRs. The genetic optimization was performed over 5 generations with a population of 50 individuals per generation and took 23 minutes to optimze 3 FDN. The 'Hybrid' column was generated using the method described earlier with some modification, while the 'FDN Only' column uses the same method, but without the early reflection FIR filter. The target RIRs were taken from the MIT RIR survey[@traer_statistics_2016] and can be found [online](https://mcdermottlab.mit.edu/Reverb/IR_Survey.html). Three rooms were chosen for the analysis-synthesis: `h001_bedroom`, `h025_diningroom`, and `h042_hallway`, with average reverberation times of 0.30, 0.94 and 2.02 seconds respectively[@santo_rir2fdn_2024]. The optimization time for the three rooms was around 10 minutes. Some of the modifications found in the source code, which were not in the original paper, include a modification to the fitness function that now takes into account the mean error between the target RIR EDC and the synthesized ones, as well as a bug in the scripts that causes the output gains of the FDN to be set to 1. Another interesting aspect of the implementation is that, while the paper claims the tone correction filter is designed in the analysis stage (ie. before the optimization), the implementation actually first generates an impulse response without any tone filter and then the filter is designed using the energy difference between the initial spectrum of the optimized FDN and the initial spectrum of the target RIR. Furthermore, the paper claims to use the MFCCs of the impulse responses to compute the fitness function, but the implementation actually uses the mel spectrogram of the impulse responses.
+The MATLAB implementation of [@ibnyahya_method_2022] (MatchReverb) was available online and was used to generate the following RIRs. The genetic optimization was performed over 5 generations with a population of 50 individuals per generation and took 23 minutes to optimze 3 FDNs. The 'Hybrid' column was generated using the method described earlier with some modification, while the 'FDN Only' column uses the same method, but without the early reflection FIR filter. The target RIRs were taken from the MIT RIR survey[@traer_statistics_2016] and can be found [online](https://mcdermottlab.mit.edu/Reverb/IR_Survey.html). Three rooms were chosen for the analysis-synthesis: `h001_bedroom`, `h025_diningroom`, and `h042_hallway`, with average reverberation times of 0.30, 0.94 and 2.02 seconds respectively[@santo_rir2fdn_2024]. The optimization time for the three rooms was around 10 minutes. Some of the modifications found in the source code, which were not in the original paper, include a modification to the fitness function that now takes into account the mean error between the target RIR EDC and the synthesized ones, as well as a bug in the scripts that causes the output gains of the FDN to be set to 1. Another interesting aspect of the implementation is that, while the paper claims the tone correction filter is designed in the analysis stage (ie. before the optimization), the implementation actually first generates an impulse response without any tone filter and then the filter is designed using the energy difference between the initial spectrum of the optimized FDN and the initial spectrum of the target RIR. Furthermore, the paper claims to use the MFCCs of the impulse responses to compute the fitness function, but the implementation actually uses the mel spectrogram of the impulse responses.
 
-While the results of the hybrid FDN sound quite close to the reference RIR, the poor results of the FDN-only version might suggest that the early reflection FIR is doing most of the heavy lifting. The 'Replica' column was generated using my own reimplementation of the methodology. My version of the genetic algorithm was performed over 40 generations with a population of 50 individual and took 11 minutes to optimize the 3 FDNs. The higher generation number did not translate into much better results, as it was found that the FDNs tended to converge towards a local minimum in the first 10 generations.
+While the results of the hybrid FDN sound quite close to the reference RIR, the poor results of the FDN-only version might suggest that the early reflection FIR is doing most of the heavy lifting. The 'Replica' column was generated using my own reimplementation of the hybrid FDN. My version of the genetic algorithm was performed over 40 generations with a population of 50 individual and took 11 minutes to optimize the 3 FDNs. The higher generation number did not translate into much better results, as it was found that the FDNs tended to converge towards a local minimum in the first 10 generations.
 
 ### Impulse responses
 | RIR | Reference | MatchReverb - Hybrid| MatchReverb - FDN Only | Replica|
@@ -196,7 +205,7 @@ While the results of the hybrid FDN sound quite close to the reference RIR, the 
 
 ## Error visualization
 
-[@fig-error-visualization] shows the mel spectrogram of the target RIR (right), the FDN output (middle), and the error between the two (left). The error is the absolute difference between the two spectrograms, with a mean error of ~2dB. Even though the error between the two spectrograms is small, the FDN output still sounds noticeably different from the target RIR. This suggests that a fitness function solely based on the spectrogram is not sufficient to accurately match the target RIR using GA.
+[@fig-error-visualization] shows the mel spectrogram of the target RIR (left), the FDN output (middle), and the error between the two (right). The error is the absolute difference between the two spectrograms, with a mean error of ~2dB. Even though the error between the two spectrograms is small, the FDN output still sounds noticeably different from the target RIR. This suggests that a fitness function solely based on the spectrogram is not sufficient to accurately match the target RIR using GA.
 
 ::: {#fig-error-visualization}
 
@@ -243,7 +252,7 @@ I reimplemented the analysis-synthesis framework using my own FDN implementation
 
 ::: {#fig-spectral_loss layout-ncol="2"}
 
-![Magnitude response of a colorless FDN before optimization (top) and after optimization (bottom).](../assets/reverb_fdn/spectral_loss.png){ width=60% .lightbox}
+![Magnitude response between 10 and 12 kHz of a colorless FDN before optimization (top) and after optimization (bottom).](../assets/reverb_fdn/spectral_loss.png){ width=60% .lightbox}
 
 ![Magnitude response before (top) and after (bottom) optimization. Only the peaks of the response are plotted](../assets/reverb_fdn/spectral_loss_peaks.png){ width=60% .lightbox}
 
@@ -257,7 +266,7 @@ In this work, we looked into the automatic optimization of feedback delay networ
 
 ## Spectrograms of synthesized impulse responses
 
-Impulse responses and spectrograms of the target RIR, the synthesized RIR using GA and the synthesized RIR using RIR2FDN. The yellow line indicates the echo density profile as proposed by [@abel_simple_2006]. The red line indicates the time at which the echo density profile reaches a value of 1.
+Impulse responses and spectrograms of the target RIR, the synthesized RIR using GA and the synthesized RIR using RIR2FDN. The orange line indicates the echo density profile as proposed by [@abel_simple_2006]. The red line indicates the time at which the echo density profile reaches a value of 1.
 
 ::: {#fig-rir-comparison layout-ncol="2"}
 
