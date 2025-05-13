@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/fdn_perf/index.html",
       "/posts/reverb_fdn/index.html",
       "/posts/2d_mesh_sandbox/index.html",
       "/posts/bowed_string/waveguide.html",

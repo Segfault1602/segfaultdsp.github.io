@@ -112,6 +112,50 @@
     ]
   },
   {
+    "objectID": "posts/fdn_perf/index.html",
+    "href": "posts/fdn_perf/index.html",
+    "title": "Performance Measurement of Feedback Delay Networks",
+    "section": "",
+    "text": "Note\n\n\n\nThis post is a work in progress. The goal is to provide a comprehensive overview of the performance of feedback delay networks (FDNs) and convolution reverb implementations in the context of room impulse response synthesis.\nWhen comparing feedback delay networks (FDNs) and convolution reverb, FDNs are often said to offer several advantages [1, 2, 3, 4, 5], including :\nWhile it will be difficult to argue against the last two points, the first one should be easily measurable. While FDNs can be used to create a wide variety of reverberation effects, this post will focus on the usage of FDNs as a way to synthesize the acoustic properties of a real room.",
+    "crumbs": [
+      "Posts",
+      "Performance Measurement of Feedback Delay Networks"
+    ]
+  },
+  {
+    "objectID": "posts/fdn_perf/index.html#existing-benchmarks",
+    "href": "posts/fdn_perf/index.html#existing-benchmarks",
+    "title": "Performance Measurement of Feedback Delay Networks",
+    "section": "Existing benchmarks",
+    "text": "Existing benchmarks\n\nDAFx 2020\nThe first performance measurement of FDNs I could find is from a 2020 DAFx paper by Prawda et al.[6]. The authors built a FDN reverberator based on the state of the art at the time, which includes octave-band attenuation IIR filters and omits the tonal correction filter. The implementation supports block processing, and as such, no vectorized instructions are used.\n\n\n\nFDN structure from Prawda et al. [6].\nResults from the paper are shown in the table below.\n\n\n\n\n\nFDN Order\nCPU usage (%)\n\n\n\n\n4\n5.4\n\n\n8\n7.9\n\n\n16\n13.3\n\n\n32\n30.4\n\n\n64\n92.5\n\n\n\n\n\nThe measurements were done on an Intel MacBook Pro using Xcode’s time profiler. It is unclear what exactly was measured, and I suspect a non-negligible amount of CPU time was used by the JUCE framework. Since the code is available on GitHub, I was able to build the project locally and run my own benchmarks by isolating the FDN code from the JUCE framework. The following were the results of my measurements on a MacBook Air M3. The Time (ms) column shows the time it took to process 1 block of 128 samples. The CPU usage (%) column shows how much of the time allocated for one block of audio processing was used by the FDN (ie, at a sample rate of 48000Hz, each audio block has to be computed in less than 2667 \\(\\mu s\\)).\n\n\n\n\n\nFDN Order\nTime (\\(\\mu s\\))\nCPU usage (%)\n\n\n\n\n4\n21.57\n0.80\n\n\n8\n44.61\n1.67\n\n\n16\n113.72\n4.26\n\n\n32\n324.19\n12.16\n\n\n64\n850.94\n31.91\n\n\n\n\n\n\n\nSteam audio\nThe other benchmark I could find is from the Steam Audio SDK. Steam Audio is an audio solution for game developers that includes, among other things, an FDN reverberator. The open-source code also includes a benchmark for the FDN that I was able to run on my system. As far as I can tell, the FDN implementation is made of 16 channels with attenuation filters composed of 3 cascaded biquad filters. Outside of the feedback loop, 4 allpass filters are cascaded at the output of the FDN (\\(A_1(z)\\), \\(A_2(z)\\), \\(A_3(z)\\) and \\(A_4(z)\\)) and a tonal correction filter is applied at the end (\\(T(z)\\)). Below is a diagram of the FDN structure implemented by Steam Audio. Vectorized instructions are used when possible to speed up the execution. Again, the “Time (\\(\\mu s\\))” column shows the time it took to process 1 block of 128 samples.\n\n\n\nSteam Audio’s reverberator\n\n\n\n\n\nFDN Order\nTime (\\(\\mu s\\))\nCPU usage (%)\n\n\n\n\n16\n6.9772\n0.2616",
+    "crumbs": [
+      "Posts",
+      "Performance Measurement of Feedback Delay Networks"
+    ]
+  },
+  {
+    "objectID": "posts/fdn_perf/index.html#custom-c-implementation",
+    "href": "posts/fdn_perf/index.html#custom-c-implementation",
+    "title": "Performance Measurement of Feedback Delay Networks",
+    "section": "Custom C++ implementation",
+    "text": "Custom C++ implementation\nI previously implemented a realtime FDN reverberator in C++. Similarly to the Prawda et al. implementation, octave-band cascaded biquad filters are used for the attenuation filters, and a tonal correction filter was added at the end, using the same octave-band filter structure. The vDSP library is used to speed up the execution of the FDN where possible. Eigen is used for the matrix operations. Again, the “Time (\\(\\mu s\\))” column shows the time it took to process 1 block of 128 samples.\n\n\n\nFDN Order\nTime (\\(\\mu s\\))\nCPU usage (%)\n\n\n\n\n4\n7.19\n0.2696\n\n\n8\n13.65\n0.5119\n\n\n16\n24.96\n0.9360\n\n\n32\n50.35\n1.8881\n\n\n64\n100.90\n3.7838\n\n\n\n\nComputational cost breakdown\nThe table below shows the breakdown of the CPU usage for each of the major components of a 16-channel FDN. The other category includes mostly the additions in the feedback loop and the addition plus scaling of the direct signal with the reverberated signal.\n\n\n\n\n\nComponent\nTime (\\(\\mu s\\))\n(%)\n\n\n\n\nAttenuation filters\n21.5519\n79.79\n\n\nMixing matrix\n2.1699\n8.033\n\n\nDelay bank\n1.328\n4.916\n\n\nTone correction filter\n1.2316\n4.559\n\n\nOthers\n0.4150\n1.5364\n\n\nInput/Output gains\n0.3156\n1.1684\n\n\nTotal\n27.012\n100\n\n\n\n\n\nIt is clear that the overwhelming majority of the CPU usage is spent by the attenuation filters. It is worth mentioning that while simpler and cheaper filters could be used, the use of octave-band (and sometimes third-octave-band) filters is common in the literature when the goal is to recreate a real room impulse response [1, 2, 7].",
+    "crumbs": [
+      "Posts",
+      "Performance Measurement of Feedback Delay Networks"
+    ]
+  },
+  {
+    "objectID": "posts/fdn_perf/index.html#fast-convolution",
+    "href": "posts/fdn_perf/index.html#fast-convolution",
+    "title": "Performance Measurement of Feedback Delay Networks",
+    "section": "Fast convolution",
+    "text": "Fast convolution\nAn alternative to FDNs is to use fast convolution algorithms to convolve the input signal with the room impulse response. Partitioned convolution is a common approach used to convolve a signal with a potentially long impulse response. The thesis by Wefer [8] is a good reference for this approach.\nI implemented a simple non-uniform partitioned convolution algorithm in C++ based on Wefer’s thesis. The algorithm uses a very simple partitioning scheme defined as follows:\n\\[\nP = \\left( \\left[B\\right]^4,  \\left[4B\\right]^4,  \\left[8B\\right]^4, \\left[16B\\right]^N \\right),\n\\]\nwhere \\(B=128\\) is the block size and \\(N\\) increases as needed depending on the size of the FIR. A benchmark of the partitioned convolution algorithm was done by convolving a signal with a FIR filter of length ranging from 10000 taps to 144000 taps (ie, 3s of audio at 48000Hz).\n\nThe results of the benchmark show that the partitioned convolution algorithm is almost 3 times faster than the Steam Audio FDN, ~50 times faster than the 16-channel FDN from Prawda et al., and ~10 times faster than my custom C++ implementation when convolving with a 3s FIR filter. It is also worth noting that this was my first attempt at implementing a partitioned convolution algorithm, and there is no doubt that it could be optimized much further based on the more recent work published on the subject.",
+    "crumbs": [
+      "Posts",
+      "Performance Measurement of Feedback Delay Networks"
+    ]
+  },
+  {
     "objectID": "posts/reverb_fdn/index.html#feedback-delay-networks",
     "href": "posts/reverb_fdn/index.html#feedback-delay-networks",
     "title": "Automatic Optimization of Feedback Delay Networks",
