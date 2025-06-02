@@ -215,7 +215,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">April 28, 2025</p>
+        <p class="date-modified">June 2, 2025</p>
       </div>
     </div>
       
@@ -332,6 +332,14 @@ window.Quarto = {
     
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="../assets/trackswitch/trackswitch.min.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery(".player").trackSwitch({onlyradiosolo: true});
+    });
+</script>
+<link rel="stylesheet" href="../assets/trackswitch/trackswitch.min.css">
 
 
 
@@ -343,6 +351,19 @@ window.Quarto = {
 <section id="background" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Background</h1>
 <p>Feedback delay networks (FDN) are a common method to render artificial reverberation. Compared to convolution-based methods, FDNs are more flexible and generally have a lower computing cost <span class="citation" data-cites="valimaki_fifty_2012"><a href="#ref-valimaki_fifty_2012" role="doc-biblioref">[1]</a></span>. One of the main drawbacks of FDNs is that they can be difficult to design and wrong choices of parameters can lead to coloration in the reverberated signal. In this work, we will look at methods to automatically optimize the parameters of an FDN to match a target room impulse response (RIR). These methods will usually involve some kind of optimization algorithm, such as genetic algorithms (GA) or gradient descent, to optimize the parameters of the FDN followed by an analysis-synthesis framework to design the attenuation and tonal correction filters needed to match the target RIR. A brief overview of the FDN structure and the analysis-synthesis framework will be given, followed by a review of the existing methods to optimize the parameters of an FDN. Finally, a custom FDN in C++ and Python was developed to attempt to reproduce the results of two papers.</p>
+<div class="player">
+<p>
+Example trackswitch.js instance
+</p>
+<p><ts-track title="mr_cppfdn_h042_Hallway_drums"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav"></ts-source> </ts-track></p>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="../assets/trackswitch/trackswitch.min.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery(".player").trackSwitch({onlyradiosolo: true});
+    });
+</script>
 <section id="feedback-delay-networks" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="feedback-delay-networks"><span class="header-section-number">1.1</span> Feedback Delay Networks</h2>
 <p>Feedback Delay Networks (FDN) are a class of artificial reverberation algorithms that use several delay lines in a feedback loop in order to produce the reverberated sound <span class="citation" data-cites="valimaki_fifty_2012"><a href="#ref-valimaki_fifty_2012" role="doc-biblioref">[1]</a></span>.</p>
