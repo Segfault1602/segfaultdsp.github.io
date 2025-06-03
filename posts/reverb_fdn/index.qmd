@@ -4,6 +4,7 @@ jupyter: python3
 bibliography: references.bib
 csl: ieee.csl
 format: html
+mainfont: system-ui
 date: 04-21-2025
 date-modified: last-modified
 author:
@@ -16,7 +17,7 @@ include-before-body:
         <script src="../assets/trackswitch/trackswitch.min.js"></script>
         <script type="text/javascript">
             jQuery(document).ready(function() {
-                jQuery(".player").trackSwitch({onlyradiosolo: true});
+                jQuery(".player").trackSwitch({onlyradiosolo: true, repeat: true});
             });
         </script>
         <link rel="stylesheet" href="../assets/trackswitch/trackswitch.min.css" />
@@ -28,24 +29,6 @@ include-before-body:
 # Background
 
 Feedback delay networks (FDN) are a common method to render artificial reverberation. Compared to convolution-based methods, FDNs are more flexible and generally have a lower computing cost [@valimaki_fifty_2012]. One of the main drawbacks of FDNs is that they can be difficult to design and wrong choices of parameters can lead to coloration in the reverberated signal. In this work, we will look at methods to automatically optimize the parameters of an FDN to match a target room impulse response (RIR). These methods will usually involve some kind of optimization algorithm, such as genetic algorithms (GA) or gradient descent, to optimize the parameters of the FDN followed by an analysis-synthesis framework to design the attenuation and tonal correction filters needed to match the target RIR. A brief overview of the FDN structure and the analysis-synthesis framework will be given, followed by a review of the existing methods to optimize the parameters of an FDN. Finally, a custom FDN in C++ and Python was developed to attempt to reproduce the results of two papers.
-
-
-<div class="player">
-<p>Example trackswitch.js instance</p>
-<ts-track title="mr_cppfdn_h042_Hallway_drums">
-<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav"></ts-source>
-</ts-track>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="crossorigin="anonymous"></script>
-<script src="../assets/trackswitch/trackswitch.min.js"></script>
-
-
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery(".player").trackSwitch({onlyradiosolo: true});
-    });
-</script>
 
 
 ## Feedback Delay Networks
@@ -212,25 +195,152 @@ The MATLAB implementation of [@ibnyahya_method_2022] (MatchReverb) was available
 While the results of the hybrid FDN sound quite close to the reference RIR, the poor results of the FDN-only version might suggest that the early reflection FIR is doing most of the heavy lifting. The 'Replica' column was generated using my own reimplementation of the hybrid FDN. My version of the genetic algorithm was performed over 40 generations with a population of 50 individual and took 11 minutes to optimize the 3 FDNs. The higher generation number did not translate into much better results, as it was found that the FDNs tended to converge towards a local minimum in the first 10 generations.
 
 ### Impulse responses
-| RIR | Reference | MatchReverb - Hybrid| MatchReverb - FDN Only | Replica|
-|:---:|:---:|:---:|:---:|:---:|
-| Bedroom     |{{< audio file="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_50p_5g.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/fdn_only_h001_Bedroom_mr_50p_5g.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom.wav" >}}|
-| Dining Room |{{< audio file="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_50p_5g.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/fdn_only_h025_Diningroom_mr_50p_5g.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom.wav" >}}|
-| Hallway     |{{< audio file="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_50p_5g.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/fdn_only_h042_Hallway_mr_50p_5g.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway.wav" >}}|
+
+<div class="player">
+<p>Bedroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_50p_5g.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h001_Bedroom_mr_50p_5g.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Dinningroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_50p_5g.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h025_Diningroom_mr_50p_5g.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Hallway</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_50p_5g.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h042_Hallway_mr_50p_5g.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway.wav"></ts-source>
+</ts-track>
+</div>
 
 ### Audio Examples - Percussion
-| RIR | Reference | MatchReverb - Hybrid| MatchReverb - FDN Only | Replica|
-|:---:|:---:|:---:|:---:|:----:|
-| Bedroom     |{{< audio file="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_ericderr.wav" >}}|
-| Dining Room |{{< audio file="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_ericderr.wav" >}}|
-| Hallway     |{{< audio file="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_ericderr.wav" >}}|
+<div class="player">
+<p>Bedroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_ericderr.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Dining Room</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_ericderr.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Hallway</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_ericderr.wav"></ts-source>
+</ts-track>
+</div>
 
 ### Audio Examples - Drums
-| RIR | Reference | MatchReverb - Hybrid| MatchReverb - FDN Only | Replica|
-|:---:|:---:|:---:|:---:|:----:|
-| Bedroom     |{{< audio file="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_drums.wav" >}}|
-| Dining Room |{{< audio file="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_drums.wav" >}}|
-| Hallway     |{{< audio file="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav" >}}|
+<div class="player">
+<p>Bedroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_drums.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Dining Room</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_drums.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Hallway</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - Hybrid">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="MatchReverb - FDN Only">
+<ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="Replica">
+<ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav"></ts-source>
+</ts-track>
+</div>
 
 ## Error visualization
 
@@ -254,25 +364,118 @@ I reimplemented the analysis-synthesis framework using my own FDN implementation
 ## Result
 
 ### Impulse responses
-| RIR | Reference | FDN|
-|:---:|:---:|:---:|
-| Bedroom     |{{< audio file="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h001_Bedroom_65txts_48000.wav" >}}|
-| Dining Room |{{< audio file="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h025_Diningroom_8txts_48000.wav" >}}|
-| Hallway     |{{< audio file="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h042_Hallway_ElementarySchool_4txts_48000.wav" >}}|
+
+<div class="player">
+<p>Bedroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h001_Bedroom_65txts_48000.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Dining Room</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h025_Diningroom_8txts_48000.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Hallway</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h042_Hallway_ElementarySchool_4txts_48000.wav"></ts-source>
+</ts-track>
+</div>
 
 ### Audio Examples - Percussion
-| RIR | Reference | FDN - Scattering | FDN - Householder |
-|:---:|:---:|:---:|:----:|
-| Bedroom     |{{< audio file="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_ericderr.wav" >}}|
-| Dining Room |{{< audio file="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_ericderr.wav" >}}|
-| Hallway     |{{< audio file="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_ericderr.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_ericderr.wav" >}}|
+
+<div class="player">
+<p>Bedroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Scattering">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Householder">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_ericderr.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Dining Room</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Scattering">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Householder">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_ericderr.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Hallway</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Scattering">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_ericderr.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Householder">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_ericderr.wav"></ts-source>
+</ts-track>
+</div>
 
 ### Audio Examples - Drums
-| RIR | Reference | FDN - Scattering | FDN - Householder |
-|:---:|:---:|:---:|:----:|
-| Bedroom     |{{< audio file="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_drums.wav" >}}|
-| Dining Room |{{< audio file="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_drums.wav" >}}|
-| Hallway     |{{< audio file="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_drums.wav" >}}|{{< audio file="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_drums.wav" >}}|
+
+<div class="player">
+<p>Bedroom</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Scattering">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Householder">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_drums.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Dining Room</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Scattering">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Householder">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_drums.wav"></ts-source>
+</ts-track>
+</div>
+
+<div class="player">
+<p>Hallway</p>
+<ts-track title="Reference">
+<ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Scattering">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_drums.wav"></ts-source>
+</ts-track>
+<ts-track title="FDN - Householder">
+<ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_drums.wav"></ts-source>
+</ts-track>
+</div>
 
 
 ## Error visualization
@@ -320,4 +523,5 @@ The benchmarks were performed on a 2024 MacBook Air M3 using the microbenchmarki
 ![](../assets/reverb_fdn/fdn_perf.png){ width=80% .lightbox}
 
 
-## References
+# References {{< fa book >}}
+::: {#refs}
