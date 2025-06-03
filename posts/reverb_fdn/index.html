@@ -61,7 +61,9 @@ div.csl-indent {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-6d5f49080fd7a04518cb6db3008564bf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-08e864fafb47f7f7f0c312374d491098.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -336,7 +338,7 @@ window.Quarto = {
 <script src="../assets/trackswitch/trackswitch.min.js"></script>
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        jQuery(".player").trackSwitch({onlyradiosolo: true});
+        jQuery(".player").trackSwitch({onlyradiosolo: true, repeat: true});
     });
 </script>
 <link rel="stylesheet" href="../assets/trackswitch/trackswitch.min.css">
@@ -351,19 +353,6 @@ window.Quarto = {
 <section id="background" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Background</h1>
 <p>Feedback delay networks (FDN) are a common method to render artificial reverberation. Compared to convolution-based methods, FDNs are more flexible and generally have a lower computing cost <span class="citation" data-cites="valimaki_fifty_2012"><a href="#ref-valimaki_fifty_2012" role="doc-biblioref">[1]</a></span>. One of the main drawbacks of FDNs is that they can be difficult to design and wrong choices of parameters can lead to coloration in the reverberated signal. In this work, we will look at methods to automatically optimize the parameters of an FDN to match a target room impulse response (RIR). These methods will usually involve some kind of optimization algorithm, such as genetic algorithms (GA) or gradient descent, to optimize the parameters of the FDN followed by an analysis-synthesis framework to design the attenuation and tonal correction filters needed to match the target RIR. A brief overview of the FDN structure and the analysis-synthesis framework will be given, followed by a review of the existing methods to optimize the parameters of an FDN. Finally, a custom FDN in C++ and Python was developed to attempt to reproduce the results of two papers.</p>
-<div class="player">
-<p>
-Example trackswitch.js instance
-</p>
-<p><ts-track title="mr_cppfdn_h042_Hallway_drums"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav"></ts-source> </ts-track></p>
-</div>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<script src="../assets/trackswitch/trackswitch.min.js"></script>
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery(".player").trackSwitch({onlyradiosolo: true});
-    });
-</script>
 <section id="feedback-delay-networks" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="feedback-delay-networks"><span class="header-section-number">1.1</span> Feedback Delay Networks</h2>
 <p>Feedback Delay Networks (FDN) are a class of artificial reverberation algorithms that use several delay lines in a feedback loop in order to produce the reverberated sound <span class="citation" data-cites="valimaki_fifty_2012"><a href="#ref-valimaki_fifty_2012" role="doc-biblioref">[1]</a></span>.</p>
@@ -544,135 +533,66 @@ Figure&nbsp;7
 <p>While the results of the hybrid FDN sound quite close to the reference RIR, the poor results of the FDN-only version might suggest that the early reflection FIR is doing most of the heavy lifting. The ‘Replica’ column was generated using my own reimplementation of the hybrid FDN. My version of the genetic algorithm was performed over 40 generations with a population of 50 individual and took 11 minutes to optimize the 3 FDNs. The higher generation number did not translate into much better results, as it was found that the FDNs tended to converge towards a local minimum in the first 10 generations.</p>
 <section id="impulse-responses" class="level3" data-number="4.1.1">
 <h3 data-number="4.1.1" class="anchored" data-anchor-id="impulse-responses"><span class="header-section-number">4.1.1</span> Impulse responses</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">RIR</th>
-<th style="text-align: center;">Reference</th>
-<th style="text-align: center;">MatchReverb - Hybrid</th>
-<th style="text-align: center;">MatchReverb - FDN Only</th>
-<th style="text-align: center;">Replica</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Bedroom</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_50p_5g.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h001_Bedroom_mr_50p_5g.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Dining Room</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_50p_5g.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h025_Diningroom_mr_50p_5g.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Hallway</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_50p_5g.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h042_Hallway_mr_50p_5g.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-</tbody>
-</table>
+<div class="player">
+<p>
+Bedroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_50p_5g.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h001_Bedroom_mr_50p_5g.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Dinningroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_50p_5g.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h025_Diningroom_mr_50p_5g.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Hallway
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_50p_5g.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/fdn_only_h042_Hallway_mr_50p_5g.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway.wav"></ts-source> </ts-track></p>
+</div>
 </section>
 <section id="audio-examples---percussion" class="level3" data-number="4.1.2">
 <h3 data-number="4.1.2" class="anchored" data-anchor-id="audio-examples---percussion"><span class="header-section-number">4.1.2</span> Audio Examples - Percussion</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">RIR</th>
-<th style="text-align: center;">Reference</th>
-<th style="text-align: center;">MatchReverb - Hybrid</th>
-<th style="text-align: center;">MatchReverb - FDN Only</th>
-<th style="text-align: center;">Replica</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Bedroom</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Dining Room</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Hallway</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-</tbody>
-</table>
+<div class="player">
+<p>
+Bedroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_ericderr.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_ericderr.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_ericderr.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Dining Room
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_ericderr.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_ericderr.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_ericderr.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Hallway
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_ericderr.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_ericderr.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_ericderr.wav"></ts-source> </ts-track></p>
+</div>
 </section>
 <section id="audio-examples---drums" class="level3" data-number="4.1.3">
 <h3 data-number="4.1.3" class="anchored" data-anchor-id="audio-examples---drums"><span class="header-section-number">4.1.3</span> Audio Examples - Drums</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">RIR</th>
-<th style="text-align: center;">Reference</th>
-<th style="text-align: center;">MatchReverb - Hybrid</th>
-<th style="text-align: center;">MatchReverb - FDN Only</th>
-<th style="text-align: center;">Replica</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Bedroom</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Dining Room</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Hallway</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-</tbody>
-</table>
+<div class="player">
+<p>
+Bedroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_hybrid_drums.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h001_Bedroom_mr_fdnonly_drums.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h001_Bedroom_drums.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Dining Room
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_hybrid_drums.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h025_Diningroom_mr_fdnonly_drums.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h025_Diningroom_drums.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Hallway
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - Hybrid"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_hybrid_drums.wav"></ts-source> </ts-track> <ts-track title="MatchReverb - FDN Only"> <ts-source src="../assets/reverb_fdn/audio/matchreverb/h042_Hallway_mr_fdnonly_drums.wav"></ts-source> </ts-track> <ts-track title="Replica"> <ts-source src="../assets/reverb_fdn/audio/mr_replica/mr_cppfdn_h042_Hallway_drums.wav"></ts-source> </ts-track></p>
+</div>
 </section>
 </section>
 <section id="error-visualization" class="level2" data-number="4.2">
@@ -698,115 +618,66 @@ Figure&nbsp;8: Mel spectrogram of the target RIR (right), the FDN output (middle
 <h2 data-number="5.1" class="anchored" data-anchor-id="result"><span class="header-section-number">5.1</span> Result</h2>
 <section id="impulse-responses-1" class="level3" data-number="5.1.1">
 <h3 data-number="5.1.1" class="anchored" data-anchor-id="impulse-responses-1"><span class="header-section-number">5.1.1</span> Impulse responses</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">RIR</th>
-<th style="text-align: center;">Reference</th>
-<th style="text-align: center;">FDN</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Bedroom</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h001_Bedroom_65txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Dining Room</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h025_Diningroom_8txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Hallway</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h042_Hallway_ElementarySchool_4txts_48000.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-</tbody>
-</table>
+<div class="player">
+<p>
+Bedroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_65txts_48000.wav"></ts-source> </ts-track> <ts-track title="FDN"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h001_Bedroom_65txts_48000.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Dining Room
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_8txts_48000.wav"></ts-source> </ts-track> <ts-track title="FDN"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h025_Diningroom_8txts_48000.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Hallway
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ElementarySchool_4txts_48000.wav"></ts-source> </ts-track> <ts-track title="FDN"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_difffdn_h042_Hallway_ElementarySchool_4txts_48000.wav"></ts-source> </ts-track></p>
+</div>
 </section>
 <section id="audio-examples---percussion-1" class="level3" data-number="5.1.2">
 <h3 data-number="5.1.2" class="anchored" data-anchor-id="audio-examples---percussion-1"><span class="header-section-number">5.1.2</span> Audio Examples - Percussion</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">RIR</th>
-<th style="text-align: center;">Reference</th>
-<th style="text-align: center;">FDN - Scattering</th>
-<th style="text-align: center;">FDN - Householder</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Bedroom</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Dining Room</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Hallway</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_ericderr.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-</tbody>
-</table>
+<div class="player">
+<p>
+Bedroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_ericderr.wav"></ts-source> </ts-track> <ts-track title="FDN - Scattering"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_ericderr.wav"></ts-source> </ts-track> <ts-track title="FDN - Householder"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_ericderr.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Dining Room
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_ericderr.wav"></ts-source> </ts-track> <ts-track title="FDN - Scattering"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_ericderr.wav"></ts-source> </ts-track> <ts-track title="FDN - Householder"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_ericderr.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Hallway
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_ericderr.wav"></ts-source> </ts-track> <ts-track title="FDN - Scattering"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_ericderr.wav"></ts-source> </ts-track> <ts-track title="FDN - Householder"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_ericderr.wav"></ts-source> </ts-track></p>
+</div>
 </section>
 <section id="audio-examples---drums-1" class="level3" data-number="5.1.3">
 <h3 data-number="5.1.3" class="anchored" data-anchor-id="audio-examples---drums-1"><span class="header-section-number">5.1.3</span> Audio Examples - Drums</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">RIR</th>
-<th style="text-align: center;">Reference</th>
-<th style="text-align: center;">FDN - Scattering</th>
-<th style="text-align: center;">FDN - Householder</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Bedroom</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Dining Room</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Hallway</td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-<td style="text-align: center;"><figure class="figure"><audio controls="" src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_drums.wav" type="audio/wav">Your browser does not support the audio tag.</audio><figcaption></figcaption></figure></td>
-</tr>
-</tbody>
-</table>
+<div class="player">
+<p>
+Bedroom
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h001_Bedroom_ref_drums.wav"></ts-source> </ts-track> <ts-track title="FDN - Scattering"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h001_Bedroom_drums.wav"></ts-source> </ts-track> <ts-track title="FDN - Householder"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h001_Bedroom_drums.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Dining Room
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h025_Diningroom_ref_drums.wav"></ts-source> </ts-track> <ts-track title="FDN - Scattering"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h025_Diningroom_drums.wav"></ts-source> </ts-track> <ts-track title="FDN - Householder"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h025_Diningroom_drums.wav"></ts-source> </ts-track></p>
+</div>
+<div class="player">
+<p>
+Hallway
+</p>
+<p><ts-track title="Reference"> <ts-source src="../assets/reverb_fdn/audio/refs/h042_Hallway_ref_drums.wav"></ts-source> </ts-track> <ts-track title="FDN - Scattering"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_h042_Hallway_drums.wav"></ts-source> </ts-track> <ts-track title="FDN - Householder"> <ts-source src="../assets/reverb_fdn/audio/rir2fdn/ga_diff_h042_Hallway_drums.wav"></ts-source> </ts-track></p>
+</div>
 </section>
 </section>
 <section id="error-visualization-1" class="level2" data-number="5.2">
@@ -879,15 +750,12 @@ Figure&nbsp;10: <a href="../assets/reverb_fdn/rir_comparison_h042_Hallway.png" c
 <p>The benchmarks were performed on a 2024 MacBook Air M3 using the microbenchmarking library <a href="https://nanobench.ankerl.com/">nanobench</a> and measured the time taken to render 1 second of audio at 48kHz.</p>
 <p><a href="../assets/reverb_fdn/fdn_perf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="../assets/reverb_fdn/fdn_perf.png" class="img-fluid" style="width:80.0%"></a></p>
 </section>
-<section id="references" class="level2" data-number="7.3">
-
-
-
-
 </section>
-</section>
+<section id="references" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> References <i class="fa-solid fa-book" aria-label="book"></i></h1>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">7.3 References</h2><div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+
 <div id="ref-valimaki_fifty_2012" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">V. Valimaki, J. D. Parker, L. Savioja, J. O. Smith, and J. S. Abel, <span>“Fifty years of artificial reverberation,”</span> <em><span>IEEE</span> Transactions on Audio, Speech, and Language Processing</em>, vol. 20, no. 5, pp. 1421–1448, Jul. 2012, doi: <a href="https://doi.org/10.1109/TASL.2012.2189567">10.1109/TASL.2012.2189567</a>.</div>
 </div>
@@ -963,7 +831,10 @@ Figure&nbsp;10: <a href="../assets/reverb_fdn/rir_comparison_h042_Hallway.png" c
 <div id="ref-abel_simple_2006" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[25] </div><div class="csl-right-inline">J. S. Abel and P. Huang, <span>“A simple, robust measure of reverberation echo density,”</span> <em>Audio Eng. Soc. Conv.</em>, 2006.</div>
 </div>
-</div></section></div></main> <!-- /main -->
+</div>
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
